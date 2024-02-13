@@ -7,8 +7,9 @@ export const create = mutation({
         title: v.string(),
         description: v.string(),
         price: v.number(),
-        imageUrl: v.string(),
         category: v.string(),
+        ownerId: v.string(),
+        ownerName: v.string(),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -64,18 +65,22 @@ export const generateUploadUrl = mutation(async (ctx) => {
 });
 
 
-export const updateImage = mutation({
+export const sendImage = mutation({
     args: { id: v.id("gigs"), storageId: v.id("_storage"), author: v.string() },
     handler: async (ctx, args) => {
-        const { id } = args; adsfadfasdfasdfasdfasdfa
-        asdfasdfasdfasdfasdfasdf
-        // PROBLEM:
-        get ID of the table, look for it in convex docs
-
+        const { id } = args;
+        console.log("id", id);
         await ctx.db.patch(id, {
-            storageId: args.storageId,
+            imageUrl: args.storageId,
             format: "image",
         });
+    },
+});
+
+export const getImageUrl = query({
+    args: { id: v.id("_storage") },
+    handler: async (ctx, args) => {
+        return await ctx.storage.getUrl(args.id);
     },
 });
 

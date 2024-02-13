@@ -1,20 +1,23 @@
+import { Sidebar } from "../../(dashboard)/_components/sidebar";
 import Navbar from "./_components/navbar";
-import { Sidebar } from "./_components/sidebar";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
+    params: {
+        gigId: string;
+    };
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const GigLayout = ({ children, params }: DashboardLayoutProps) => {
     return (
         <main className="h-full">
             <Sidebar />
             <div className="lg:pl-[300px] h-full">
-                <Navbar />
+                <Navbar gigId={params.gigId} />
                 {children}
             </div>
         </main>
     );
 }
 
-export default DashboardLayout;
+export default GigLayout;

@@ -10,6 +10,7 @@ export default defineSchema({
         ownerName: v.string(),
         storageId: v.optional(v.string()),
         format: v.optional(v.string()),
+        imageUrl: v.optional(v.string()),
         // category: v.string(),
     })
         // .index("by_category", ["category"])

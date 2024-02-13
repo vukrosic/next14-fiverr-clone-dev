@@ -16,7 +16,7 @@ interface GigCardProps {
     description: string;
     price: number;
     imageUrl: string;
-    category: string;
+    // category: string;
     ownerId: string;
     ownerName: string;
     createdAt: number;
@@ -29,7 +29,7 @@ export const GigCard = ({
     description,
     price,
     imageUrl,
-    category,
+    // category,
     ownerId,
     ownerName,
     createdAt,
@@ -40,7 +40,7 @@ export const GigCard = ({
     const ownerLabel = userId === ownerId ? "You" : ownerName;
     const createdAtLabel = formatDistanceToNow(createdAt, { addSuffix: true });
     return (
-        <Link href={`/gigs/${id}`}>
+        <Link href={`/gig/${id}`}>
             <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden">
                 <div className="relative flex-1 bg-blue-50">
                     <Image

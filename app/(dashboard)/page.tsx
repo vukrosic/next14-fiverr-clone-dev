@@ -9,12 +9,12 @@ interface DashboardProps {
 
 const Dashboard = ({
     searchParams
-}:DashboardProps) => {
-    return ( 
+}: DashboardProps) => {
+    return (
         <GigList
-        query={searchParams}
+            query={searchParams}
         />
-     );
-}
- 
+    );
+};
+
 export default Dashboard;
