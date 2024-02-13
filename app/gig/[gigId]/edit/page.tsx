@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { DescriptionEditor } from "@/components/description-editor";
 
 
 interface EditdPageProps {
@@ -100,7 +101,7 @@ const Edit = ({ params }: EditdPageProps) => {
 
 
     return (
-        <div className="space-y-8 2xl:px-64 xl:px-36 md:px-12">
+        <div className="space-y-8 2xl:px-64 xl:px-36 md:px-12 mb-52">
             <div className="flex justify-end pr-2 space-x-2">
                 <Link href={`/gig/${gig._id}`}>
                     <Button disabled={pending} variant={"secondary"}>
@@ -146,8 +147,11 @@ const Edit = ({ params }: EditdPageProps) => {
             <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                 <p className="text-muted-foreground">👨‍🎨 Creator: {gig.ownerName}</p>
             </div>
-            <p className="italic">About this gig:</p>
-            <p>{gig.description}</p>
+            <p className="italic">Edit description:</p>
+            <DescriptionEditor
+                onChange={() => { }}
+                initialContent={gig.description}
+            />
         </div>
     )
 }

@@ -68,7 +68,7 @@ const GigIdPage = ({
 
             <h1 className="text-3xl font-semibold text-zinc-700">{gig.title}</h1>
 
-            {gig.imageUrl && (
+            {/* {gig.imageUrl && (
                 <Image
                     src={gig.imageUrl}
                     alt={gig.title}
@@ -76,7 +76,7 @@ const GigIdPage = ({
                     height={720}
                     objectFit="cover"
                 />
-            )}
+            )} */}
 
             <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                 <p className="text-muted-foreground">👨‍🎨 Creator: {gig.ownerName}</p>
