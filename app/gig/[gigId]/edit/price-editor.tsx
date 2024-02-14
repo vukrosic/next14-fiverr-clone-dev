@@ -26,7 +26,9 @@ export const PriceEditor = ({
         setIsEditing(true);
         setTimeout(() => {
             setValue(price);
+            const inputElement = inputRef.current;
             inputRef.current?.focus();
+            inputElement?.setSelectionRange(inputElement.value.length, inputElement.value.length);
         }, 0);
     };
 
