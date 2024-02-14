@@ -11,17 +11,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useRef, useState } from "react";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { DescriptionEditor } from "@/components/description-editor";
+import { Description } from "@/components/description";
 import { ConvexImage } from "@/components/convex-image";
 import { TitleEditor } from "./title-editor";
 import { PriceEditor } from "./price-editor";
@@ -103,58 +95,61 @@ const Edit = ({ params }: EditdPageProps) => {
 
 
     return (
-        <div className="space-y-8 2xl:px-64 xl:px-36 md:px-12 mb-52">
-            <div className="flex justify-end pr-2 space-x-2">
-                <Link href={`/gig/${gig._id}`}>
-                    <Button disabled={pending} variant={"secondary"}>
-                        Preview
+        <>
+            <div className="space-y-8 2xl:px-64 xl:px-36 md:px-12 px-12">
+                <div className="flex justify-end pr-2 space-x-2">
+                    <Link href={`/gig/${gig._id}`}>
+                        <Button disabled={pending} variant={"secondary"}>
+                            Preview
+                        </Button>
+                    </Link>
+                    <Button disabled={pending} variant={"secondary"} onClick={onDelete}>
+                        Delete
                     </Button>
-                </Link>
-                <Button disabled={pending} variant={"secondary"} onClick={onDelete}>
-                    Delete
-                </Button>
-            </div>
+                </div>
 
-            <TitleEditor
-                id={gig._id}
-                title={gig.title}
-            />
-
-            <div className="relative aspect-video overflow-hidden">
-                <ConvexImage
-                    storageId={gig.storageId}
+                <TitleEditor
+                    id={gig._id}
                     title={gig.title}
                 />
-            </div>
 
-            <form onSubmit={handleSendImage} className="flex space-x-2">
-                <Input
-                    type="file"
-                    accept="image/*"
-                    ref={imageInput}
-                    onChange={(event) => setSelectedImage(event.target.files![0])}
-                    className="cursor-pointer w-fit bg-zinc-100 text-zinc-700 border-zinc-300 hover:bg-zinc-200 hover:border-zinc-400 focus:border-zinc-400 focus:bg-zinc-200"
-                    disabled={selectedImage !== null}
+                <div className="relative aspect-video overflow-hidden">
+                    <ConvexImage
+                        storageId={gig.storageId}
+                        title={gig.title}
+                    />
+                </div>
+
+                <form onSubmit={handleSendImage} className="flex space-x-2">
+                    <Input
+                        type="file"
+                        accept="image/*"
+                        ref={imageInput}
+                        onChange={(event) => setSelectedImage(event.target.files![0])}
+                        className="cursor-pointer w-fit bg-zinc-100 text-zinc-700 border-zinc-300 hover:bg-zinc-200 hover:border-zinc-400 focus:border-zinc-400 focus:bg-zinc-200"
+                        disabled={selectedImage !== null}
+                    />
+                    <Button
+                        type="submit"
+                        className={cn("w-fit", selectedImage === null && "cursor-not-allowed")}
+                    >Upload Image</Button>
+                </form>
+
+                <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
+                    <p className="text-muted-foreground">👨‍🎨 Creator: {gig.ownerName}</p>
+                </div>
+                <PriceEditor
+                    id={gig._id}
+                    price={gig.price}
                 />
-                <Button
-                    type="submit"
-                    className={cn("w-fit", selectedImage === null && "cursor-not-allowed")}
-                >Upload Image</Button>
-            </form>
-
-            <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
-                <p className="text-muted-foreground">👨‍🎨 Creator: {gig.ownerName}</p>
             </div>
-            <PriceEditor
+            <Description
                 id={gig._id}
-                price={gig.price}
-            />
-            <p className="italic">Edit description:</p>
-            <DescriptionEditor
-                onChange={() => { }}
                 initialContent={gig.description}
+                editable={true}
+                className="pb-40 pt-6 2xl:px-[200px] xl:px-[90px] xs:px-[17px]"
             />
-        </div>
+        </>
     )
 }
 

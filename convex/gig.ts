@@ -7,9 +7,6 @@ export const create = mutation({
         title: v.string(),
         description: v.string(),
         price: v.number(),
-        category: v.string(),
-        ownerId: v.string(),
-        ownerName: v.string(),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -24,7 +21,6 @@ export const create = mutation({
             price: args.price,
             ownerId: identity.subject,
             ownerName: identity.name!,
-            // category: args.category,
         });
 
         return gig;
@@ -113,6 +109,7 @@ export const update = mutation({
     },
 });
 
+
 export const updateDescription = mutation({
     args: { id: v.id("gigs"), description: v.string() },
     handler: async (ctx, args) => {
@@ -128,8 +125,8 @@ export const updateDescription = mutation({
             throw new Error("Description is required");
         }
 
-        if (description.length > 500) {
-            throw new Error("Description cannot be longer than 500 characters")
+        if (description.length > 20000) {
+            throw new Error("Description is too long!")
         }
 
         const gig = await ctx.db.patch(args.id, {

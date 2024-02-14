@@ -43,7 +43,7 @@ export const GigList = ({
             <h2 className="flex text-5xl font-bold text-muted-foreground justify-center items-center my-4">
                 {query.favorites ? "Favorite gigs" : "All gigs"}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-10 mx-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-5 mt-8 pb-10 mx-10">
                 {data?.map((gig) => (
                     <GigCard
                         key={gig._id}
