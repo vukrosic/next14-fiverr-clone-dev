@@ -9,13 +9,14 @@ import { Footer } from "./footer";
 import { Actions } from "@/components/actions";
 import { MoreHorizontal } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ConvexImage } from "@/components/convex-image";
 
 interface GigCardProps {
     id: string;
     title: string;
     description: string;
     price: number;
-    imageUrl: string;
+    storageId?: string;
     // category: string;
     ownerId: string;
     ownerName: string;
@@ -28,7 +29,7 @@ export const GigCard = ({
     title,
     description,
     price,
-    imageUrl,
+    storageId,
     // category,
     ownerId,
     ownerName,
@@ -43,11 +44,9 @@ export const GigCard = ({
         <Link href={`/gig/${id}`}>
             <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden">
                 <div className="relative flex-1 bg-blue-50">
-                    <Image
-                        src={imageUrl}
-                        alt={title}
-                        fill
-                        className="object-cover"
+                    <ConvexImage
+                        storageId={storageId}
+                        title={title}
                     />
                     <Overlay />
                     <Actions

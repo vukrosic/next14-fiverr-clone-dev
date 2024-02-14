@@ -71,16 +71,17 @@ export const sendImage = mutation({
         const { id } = args;
         console.log("id", id);
         await ctx.db.patch(id, {
-            imageUrl: args.storageId,
+            storageId: args.storageId,
             format: "image",
         });
     },
 });
 
 export const getImageUrl = query({
-    args: { id: v.id("_storage") },
+    args: { storageId: v.optional(v.id("_storage")) },
     handler: async (ctx, args) => {
-        return await ctx.storage.getUrl(args.id);
+        if (!args.storageId) return null;
+        return await ctx.storage.getUrl(args.storageId);
     },
 });
 
@@ -106,6 +107,50 @@ export const update = mutation({
 
         const gig = await ctx.db.patch(args.id, {
             title: args.title,
+        });
+
+        return gig;
+    },
+});
+
+export const updateDescription = mutation({
+    args: { id: v.id("gigs"), description: v.string() },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            throw new Error("Unauthorized");
+        }
+
+        const description = args.description.trim();
+
+        if (!description) {
+            throw new Error("Description is required");
+        }
+
+        if (description.length > 500) {
+            throw new Error("Description cannot be longer than 500 characters")
+        }
+
+        const gig = await ctx.db.patch(args.id, {
+            description: args.description,
+        });
+
+        return gig;
+    },
+});
+
+export const updatePrice = mutation({
+    args: { id: v.id("gigs"), price: v.number() },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            throw new Error("Unauthorized");
+        }
+
+        const gig = await ctx.db.patch(args.id, {
+            price: args.price,
         });
 
         return gig;

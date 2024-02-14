@@ -22,6 +22,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { DescriptionEditor } from "@/components/description-editor";
+import { ConvexImage } from "@/components/convex-image";
+import { TitleEditor } from "./title-editor";
+import { PriceEditor } from "./price-editor";
 
 
 interface EditdPageProps {
@@ -44,8 +47,7 @@ const Edit = ({ params }: EditdPageProps) => {
     const sendImage = useMutation(api.gig.sendImage);
 
 
-    const imageUrl = useQuery(api.gig.getImageUrl, { id: gig?.imageUrl as Id<"_storage"> });
-    console.log("imageUrl", imageUrl);
+    const imageUrl = useQuery(api.gig.getImageUrl, { storageId: gig?.storageId as Id<"_storage"> });
 
     if (!identity) {
         throw new Error("Unauthorized");
@@ -113,20 +115,16 @@ const Edit = ({ params }: EditdPageProps) => {
                 </Button>
             </div>
 
-            <h1 className="text-3xl font-semibold text-zinc-700">{gig.title}</h1>
-
-
-
+            <TitleEditor
+                id={gig._id}
+                title={gig.title}
+            />
 
             <div className="relative aspect-video overflow-hidden">
-                {imageUrl && (
-                    <Image
-                        src={imageUrl}
-                        alt={gig.title}
-                        fill
-                        className="object-cover rounded-xl shadow-xl"
-                    />
-                )}
+                <ConvexImage
+                    storageId={gig.storageId}
+                    title={gig.title}
+                />
             </div>
 
             <form onSubmit={handleSendImage} className="flex space-x-2">
@@ -147,6 +145,10 @@ const Edit = ({ params }: EditdPageProps) => {
             <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                 <p className="text-muted-foreground">👨‍🎨 Creator: {gig.ownerName}</p>
             </div>
+            <PriceEditor
+                id={gig._id}
+                price={gig.price}
+            />
             <p className="italic">Edit description:</p>
             <DescriptionEditor
                 onChange={() => { }}
