@@ -41,3 +41,13 @@
 //     await ctx.db.insert("messages", { body, author, format: "text" });
 //   },
 // });
+
+
+
+import { query } from "./_generated/server";
+
+export const list = query({
+    handler: async (ctx) => {
+        return await ctx.db.query("messages").collect();
+    },
+});

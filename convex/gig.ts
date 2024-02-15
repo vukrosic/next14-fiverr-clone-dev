@@ -156,7 +156,7 @@ export const updatePrice = mutation({
 
 
 export const favorite = mutation({
-    args: { id: v.id("gigs"), category: v.string() },
+    args: { id: v.id("gigs") },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
 
@@ -188,7 +188,6 @@ export const favorite = mutation({
         await ctx.db.insert("userFavorites", {
             userId,
             gigId: gig._id,
-            category: args.category,
         });
 
         return gig;

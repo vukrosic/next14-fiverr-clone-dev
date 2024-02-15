@@ -16,6 +16,9 @@ import type {
 } from "convex/server";
 import type * as gig from "../gig.js";
 import type * as gigs from "../gigs.js";
+import type * as messages from "../messages.js";
+import type * as payments from "../payments.js";
+import type * as stripe from "../stripe.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -28,6 +31,9 @@ import type * as gigs from "../gigs.js";
 declare const fullApi: ApiFromModules<{
   gig: typeof gig;
   gigs: typeof gigs;
+  messages: typeof messages;
+  payments: typeof payments;
+  stripe: typeof stripe;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

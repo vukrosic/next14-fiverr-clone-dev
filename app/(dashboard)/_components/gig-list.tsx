@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { EmptySearch } from "./empty-search";
 import { EmptyFavorites } from "./empty-favorites";
 import { GigCard } from "./gig-card";
+import { Loading } from "@/components/auth/loading";
 
 interface GigListProps {
     query: {
@@ -16,13 +17,13 @@ interface GigListProps {
 export const GigList = ({
     query,
 }: GigListProps) => {
-    const data = useQuery(api.gigs.get);
+    const data = useQuery(api.gigs.get, { ...query });
 
     if (data === undefined) {
         return (
-            <div>
-                Loading...
-            </div>
+            <h2 className="flex text-5xl font-bold text-muted-foreground justify-center items-center my-4">
+                {query.favorites ? "Favorite gigs" : "All gigs"}
+            </h2>
         )
     }
 
@@ -52,11 +53,10 @@ export const GigList = ({
                         description={gig.description}
                         price={gig.price}
                         storageId={gig.storageId}
-                        // category={gig.category || "Uncategorized"}
                         ownerId={gig.ownerId}
                         ownerName={gig.ownerName}
                         createdAt={gig._creationTime}
-                        isFavorite={false}
+                        isFavorite={gig.favorited}
                     />
                 ))
                 }

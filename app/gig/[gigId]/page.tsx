@@ -42,7 +42,7 @@ const GigIdPage = ({
     }
 
     if (gig === null) {
-        return <div>Not found</div>;
+        return <div className="text-3xl p-12 text-muted-foreground">Not found</div>;
     }
     return (
         <>
@@ -63,7 +63,6 @@ const GigIdPage = ({
                         </>
                     ) : (
                         <>
-                            <Button>${gig.price} USD</Button>
                             <Button variant={"secondary"}>Message</Button>
                         </>
                     )}

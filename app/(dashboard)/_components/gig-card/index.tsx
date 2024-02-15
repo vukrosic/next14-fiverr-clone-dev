@@ -2,14 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Overlay } from "./overlay";
 import { useAuth } from "@clerk/nextjs";
 import { formatDistanceToNow } from "date-fns";
-import { Footer } from "./footer";
 import { Actions } from "@/components/actions";
 import { MoreHorizontal } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ConvexImage } from "@/components/convex-image";
+
+import { Footer } from "./footer";
+import { Overlay } from "./overlay";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
 
 interface GigCardProps {
     id: string;
@@ -17,7 +21,6 @@ interface GigCardProps {
     description: string;
     price: number;
     storageId?: string;
-    // category: string;
     ownerId: string;
     ownerName: string;
     createdAt: number;
@@ -30,7 +33,6 @@ export const GigCard = ({
     description,
     price,
     storageId,
-    // category,
     ownerId,
     ownerName,
     createdAt,
@@ -40,6 +42,27 @@ export const GigCard = ({
 
     const ownerLabel = userId === ownerId ? "You" : ownerName;
     const createdAtLabel = formatDistanceToNow(createdAt, { addSuffix: true });
+
+    const {
+        mutate: favorite,
+        pending: favoritePending
+    } = useApiMutation(api.gig.favorite);
+    const {
+        mutate: unfavorite,
+        pending: unfavoritePending
+    } = useApiMutation(api.gig.unfavorite);
+
+    const toggleFavorite = () => {
+        console.log(isFavorite);
+        if (isFavorite) {
+            unfavorite({ id })
+                .catch(() => toast.error("Failed to unfavorite"));
+        } else {
+            favorite({ id })
+                .catch(() => toast.error("Failed to favorite"));
+        }
+    }
+
     return (
         <Link href={`/gig/${id}`}>
             <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden">
@@ -68,8 +91,8 @@ export const GigCard = ({
                     title={title}
                     ownerLabel={ownerLabel}
                     createdAtLabel={createdAtLabel}
-                    onClick={() => { }}
-                    disabled={false}
+                    onClick={toggleFavorite}
+                    disabled={favoritePending || unfavoritePending}
                 />
             </div>
         </Link>

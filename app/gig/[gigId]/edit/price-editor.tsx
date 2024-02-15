@@ -6,6 +6,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { ElementRef, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import { toast } from "sonner";
 
 interface PriceEditorProps {
     id: Id<"gigs">;
@@ -32,7 +33,10 @@ export const PriceEditor = ({
         }, 0);
     };
 
-    const disableEditing = () => setIsEditing(false);
+    const disableEditing = () => {
+        setIsEditing(false)
+        toast.success("Changes saved!");
+    };
 
     const onInput = (value: string) => {
         if (value === "") value = "0";
