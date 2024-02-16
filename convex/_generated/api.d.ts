@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as categories from "../categories.js";
 import type * as categoriesScript from "../categoriesScript.js";
 import type * as gig from "../gig.js";
 import type * as gigMedia from "../gigMedia.js";
@@ -31,6 +32,7 @@ import type * as stripe from "../stripe.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  categories: typeof categories;
   categoriesScript: typeof categoriesScript;
   gig: typeof gig;
   gigMedia: typeof gigMedia;
