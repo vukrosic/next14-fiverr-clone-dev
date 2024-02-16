@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { getAllOrThrow } from "convex-helpers/server/relationships";
+import { Id } from "./_generated/dataModel";
 
 export const get = query({
     args: {
@@ -17,7 +18,7 @@ export const get = query({
         if (args.favorites) {
             const favorites = await ctx.db
                 .query("userFavorites")
-                .withIndex("by_user", (q) => q.eq("userId", identity.subject))
+                .withIndex("by_user", (q) => q.eq("userId", identity.subject as Id<"users">))
                 .order("desc")
                 .collect();
 
@@ -55,7 +56,7 @@ export const get = query({
                 .query("userFavorites")
                 .withIndex("by_user_gig", (q) =>
                     q
-                        .eq("userId", identity.subject)
+                        .eq("userId", identity.subject as Id<"users">)
                         .eq("gigId", gig._id)
                 )
                 .unique()

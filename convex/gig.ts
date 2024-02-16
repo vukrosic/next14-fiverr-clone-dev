@@ -1,12 +1,14 @@
 import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const create = mutation({
     args: {
         title: v.string(),
         description: v.string(),
-        price: v.number(),
+        subcategoryId: v.string(),
+        published: v.boolean(),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -18,9 +20,10 @@ export const create = mutation({
         const gig = await ctx.db.insert("gigs", {
             title: args.title,
             description: args.description,
-            price: args.price,
-            ownerId: identity.subject,
-            ownerName: identity.name!,
+            subcategoryId: args.subcategoryId as Id<"subcategories">,
+            sellerId: identity.subject as Id<"users">,
+            published: args.published || false,
+            clicks: 0,
         });
 
         return gig;
@@ -36,7 +39,7 @@ export const remove = mutation({
             throw new Error("Unauthorized");
         }
 
-        const userId = identity.subject;
+        const userId = identity.subject as Id<"users">;
 
         const existingFavorite = await ctx.db
             .query("userFavorites")
@@ -60,18 +63,6 @@ export const generateUploadUrl = mutation(async (ctx) => {
     return await ctx.storage.generateUploadUrl();
 });
 
-
-export const sendImage = mutation({
-    args: { id: v.id("gigs"), storageId: v.id("_storage"), author: v.string() },
-    handler: async (ctx, args) => {
-        const { id } = args;
-        console.log("id", id);
-        await ctx.db.patch(id, {
-            storageId: args.storageId,
-            format: "image",
-        });
-    },
-});
 
 export const getImageUrl = query({
     args: { storageId: v.optional(v.id("_storage")) },
@@ -137,22 +128,22 @@ export const updateDescription = mutation({
     },
 });
 
-export const updatePrice = mutation({
-    args: { id: v.id("gigs"), price: v.number() },
-    handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
+// export const updatePrice = mutation({
+//     args: { id: v.id("gigs"), price: v.number() },
+//     handler: async (ctx, args) => {
+//         const identity = await ctx.auth.getUserIdentity();
 
-        if (!identity) {
-            throw new Error("Unauthorized");
-        }
+//         if (!identity) {
+//             throw new Error("Unauthorized");
+//         }
 
-        const gig = await ctx.db.patch(args.id, {
-            price: args.price,
-        });
+//         const gig = await ctx.db.patch(args.id, {
+//             price: args.price,
+//         });
 
-        return gig;
-    },
-});
+//         return gig;
+//     },
+// });
 
 
 export const favorite = mutation({
@@ -170,7 +161,7 @@ export const favorite = mutation({
             throw new Error("Board not found");
         }
 
-        const userId = identity.subject;
+        const userId = identity.subject as Id<"users">;
 
         const existingFavorite = await ctx.db
             .query("userFavorites")
@@ -210,7 +201,7 @@ export const unfavorite = mutation({
             throw new Error("Board not found");
         }
 
-        const userId = identity.subject;
+        const userId = identity.subject as Id<"users">;
 
         const existingFavorite = await ctx.db
             .query("userFavorites")
