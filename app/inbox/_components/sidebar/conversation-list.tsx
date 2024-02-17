@@ -11,7 +11,7 @@ import { api } from "@/convex/_generated/api";
 // import { find, uniq } from 'lodash';
 
 const ConversationList = () => {
-    const conversations = useQuery(api.conversations.get);
+    const conversations = useQuery(api.conversations.getByUser);
     const currentUser = useQuery(api.users.getCurrentUser);
 
     if (conversations === undefined) {

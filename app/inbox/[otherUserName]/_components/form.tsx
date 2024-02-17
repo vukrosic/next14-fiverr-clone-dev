@@ -1,6 +1,7 @@
 'use client';
 
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useState } from "react";
 import {
@@ -9,8 +10,8 @@ import {
 } from "react-icons/hi2";
 
 interface FormProps {
-    userId: string;
-    conversationId: string;
+    userId: Doc<"users">["_id"];
+    conversationId: Doc<"conversations">["_id"];
 }
 
 const Form = ({
