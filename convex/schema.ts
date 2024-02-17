@@ -3,14 +3,16 @@ import { defineSchema, defineTable } from "convex/server";
 
 export default defineSchema({
     users: defineTable({
-        displayName: v.string(),
+        fullName: v.string(),
         username: v.string(),
         title: v.string(),
         about: v.string(),
-        portfolioUrls: v.array(v.string()),
-        favoritedSellerIds: v.array(v.string()),
-
-    }),
+        portfolioUrls: v.optional(v.array(v.string())),
+        favoritedSellerIds: v.optional(v.array(v.string())),
+        tokenIdentifier: v.string(),
+    })
+        .index("by_token", ["tokenIdentifier"])
+        .index("by_username", ["username"]),
     reviews: defineTable({
         authorId: v.id("users"),
         sellerId: v.id("users"),
@@ -82,15 +84,18 @@ export default defineSchema({
     }),
     messages: defineTable({
         userId: v.id("users"),
-        text: v.string(),
-        imageUrl: v.string(),
-        seenIds: v.string(),
-    }),
-    conversation: defineTable({
-        userId: v.id("users"),
-        messageId: v.id("messages"),
-        lastMessageTimestamp: v.int64(),
-    }),
+        text: v.optional(v.string()),
+        imageUrl: v.optional(v.string()),
+        seen: v.boolean(),
+        conversationId: v.id("conversations"),
+    })
+        .index('by_conversationId', ['conversationId']),
+    conversations: defineTable({
+        participantOneId: v.id("users"),
+        participantTwoId: v.id("users"),
+    })
+        .index('by_participantOneId', ['participantOneId', 'participantTwoId'])
+        .index('by_participantTwoId', ['participantTwoId', 'participantOneId']),
     userFavorites: defineTable({
         userId: v.id("users"),
         gigId: v.id("gigs"),
