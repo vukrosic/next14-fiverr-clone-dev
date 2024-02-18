@@ -1,7 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import { EmptyFavorites } from "../(dashboard)/_components/empty-favorites";
+import useStoreUserEffect from "@/hooks/use-store-user-effect";
 
 const InboxPage = () => {
+    const userId = useStoreUserEffect();
+    if (userId === null) {
+        return <div>Storing user...</div>;
+    }
     return (
         <div className="h-full flex flex-col items-center justify-center">
             <Image

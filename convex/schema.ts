@@ -8,6 +8,7 @@ export default defineSchema({
         title: v.string(),
         about: v.string(),
         portfolioUrls: v.optional(v.array(v.string())),
+        profileImageUrl: v.optional(v.string()),
         favoritedSellerIds: v.optional(v.array(v.string())),
         tokenIdentifier: v.string(),
     })

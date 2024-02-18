@@ -45,7 +45,7 @@ const ConversationPage = ({
         <div className="h-full">
             <div className="h-full flex flex-col">
                 {/* <Header conversation={conversation} /> */}
-                <Body messages={conversationData.messages} />
+                <Body messages={conversationData.messagesWithUsers} />
                 <Form
                     userId={conversationData.currentUser._id}
                     conversationId={conversationData.conversation._id}

@@ -34,6 +34,7 @@ const Navbar = () => {
         pending: pendingCreateGig,
     } = useApiMutation(api.gig.create);
     const categories = useQuery(api.categories.get);
+    const currentUser = useQuery(api.users.getCurrentUser);
 
     const router = useRouter();
 
@@ -71,9 +72,12 @@ const Navbar = () => {
                 <Button onClick={onClickInbox} variant={"ghost"}>
                     <MessageCircle />
                 </Button>
-                <Button onClick={onClickCreate}>
-                    Create
-                </Button>
+                {currentUser && (
+                    <Button onClick={() => router.push(`/seller/${currentUser.username}`)}>
+                        Switch To Selling
+                    </Button>
+                )}
+                <UserButton />
             </div>
             <NavigationMenu>
                 <NavigationMenuList className="grid lg:grid-cols-5 sm:grid-cols-2 grid-cols-1">

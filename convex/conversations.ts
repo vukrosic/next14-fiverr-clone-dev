@@ -111,11 +111,23 @@ export const getConversation = query({
             .filter((q) => q.eq(q.field("conversationId"), conversation?._id))
             .collect();
 
+        const messagesWithUsersRelation = messages.map(async (message: any) => {
+            const user = await ctx.db.query("users")
+                .filter((q: any) => q.eq(q.field("_id"), message.userId))
+                .unique();
+            return {
+                ...message,
+                user
+            }
+        });
+
+        const messagesWithUsers = await Promise.all(messagesWithUsersRelation);
+
         return {
             currentUser,
             otherUser,
             conversation,
-            messages
+            messagesWithUsers
         };
     }
 });
