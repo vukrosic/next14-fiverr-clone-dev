@@ -17,9 +17,9 @@ interface GigListProps {
 export const GigList = ({
     query,
 }: GigListProps) => {
-    const data = useQuery(api.gigs.get, { ...query });
+    const gigs = useQuery(api.gigs.get, { ...query });
 
-    if (data === undefined) {
+    if (gigs === undefined) {
         return (
             <h2 className="flex text-5xl font-bold text-muted-foreground justify-center items-center my-4">
                 {query.favorites ? "Favorite gigs" : "All gigs"}
@@ -27,13 +27,13 @@ export const GigList = ({
         )
     }
 
-    if (!data?.length && query.search) {
+    if (!gigs?.length && query.search) {
         return (
             <EmptySearch />
         )
     }
 
-    if (!data?.length && query.favorites) {
+    if (!gigs?.length && query.favorites) {
         return (
             <EmptyFavorites />
         )
@@ -45,16 +45,13 @@ export const GigList = ({
                 {query.favorites ? "Favorite gigs" : "All gigs"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-5 mt-8 pb-10 mx-10">
-                {data?.map((gig) => (
+                {gigs?.map((gig) => (
                     <GigCard
                         key={gig._id}
                         id={gig._id}
+                        sellerId={gig.sellerId}
                         title={gig.title}
                         description={gig.description}
-                        price={gig.price}
-                        storageId={gig.storageId}
-                        ownerId={gig.ownerId}
-                        ownerName={gig.ownerName}
                         createdAt={gig._creationTime}
                         isFavorite={gig.favorited}
                     />

@@ -25,7 +25,9 @@ export const TitleEditor = ({
         setIsEditing(true);
         setTimeout(() => {
             setValue(title);
+            const inputElement = inputRef.current;
             inputRef.current?.focus();
+            inputElement?.setSelectionRange(inputElement.value.length, inputElement.value.length);
         }, 0);
     };
 

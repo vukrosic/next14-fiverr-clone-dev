@@ -11,15 +11,16 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { api } from "@/convex/_generated/api"
 import { useQuery } from "convex/react"
 import { useState } from "react"
 import { Doc } from "@/convex/_generated/dataModel"
+import { useApiMutation } from "@/hooks/use-api-mutation"
 
 
-const OverviewFormSchema = z.object({
-  username: z
+const CreateFormSchema = z.object({
+  title: z
     .string()
     .min(30, {
       message: "Title must be at least 30 characters.",
@@ -31,37 +32,30 @@ const OverviewFormSchema = z.object({
     .string({
       required_error: "Please select a category.",
     }),
-  subcategory: z
+  subcategoryId: z
     .string({
       required_error: "Please select a subcategory.",
-    }),
-  description: z.string().max(160).min(4),
+    })
 })
 
-type OverviewFormValues = z.infer<typeof OverviewFormSchema>
-
-// gigs: defineTable({
-//   title: v.string(),
-//   description: v.string(),
-//   sellerId: v.id("users"),
-//   subcategoryId: v.id("subcategories"),
-//   published: v.boolean(),
-//   clicks: v.number(),
-// })
+type CreateFormValues = z.infer<typeof CreateFormSchema>
 
 // This can come from your database or API.
-const defaultValues: Partial<OverviewFormValues> = {
-  description: "I own a computer.",
+const defaultValues: Partial<CreateFormValues> = {
+  title: "",
 }
 
-export function OverviewForm() {
+export function CreateForm() {
 
   const categories = useQuery(api.categories.get);
   const [subcategories, setSubcategories] = useState<Doc<"subcategories">[]>([]);
+  const {
+    mutate,
+    pending
+  } = useApiMutation(api.gig.create);
 
-
-  const form = useForm<OverviewFormValues>({
-    resolver: zodResolver(OverviewFormSchema),
+  const form = useForm<CreateFormValues>({
+    resolver: zodResolver(CreateFormSchema),
     defaultValues,
     mode: "onChange",
   })
@@ -73,16 +67,19 @@ export function OverviewForm() {
       setSubcategories(selectedCategory.subcategories);
     }
   }
-
-  function onSubmit(data: OverviewFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+  function onSubmit(data: CreateFormValues) {
+    mutate({
+      title: data.title,
+      description: "",
+      subcategoryId: data.subcategoryId,
+      published: false,
     })
+      .then(() => {
+        toast.info("Gig created successfully")
+      })
+      .catch(() => {
+        toast.error("Failed to create gig")
+      })
   }
 
   return (
@@ -90,7 +87,7 @@ export function OverviewForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="title"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
@@ -104,7 +101,7 @@ export function OverviewForm() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
@@ -123,7 +120,7 @@ export function OverviewForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="category"
@@ -159,36 +156,33 @@ export function OverviewForm() {
             </FormItem>
           )}
         />
-        {/* Subcategory field */}
-        {subcategories.length > 0 && (
-          <FormField
-            control={form.control}
-            name="subcategory"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Subcategory</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a subcategory" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {subcategories.map((subcategory, index) => (
-                      <SelectItem key={index} value={subcategory.name}>
-                        {subcategory.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  Subcategory will help buyers pinpoint your service more narrowly.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        <FormField
+          control={form.control}
+          name="subcategoryId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Subcategory</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a subcategory" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {subcategories.map((subcategory, index) => (
+                    <SelectItem key={index} value={subcategory._id}>
+                      {subcategory.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Subcategory will help buyers pinpoint your service more narrowly.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit">Save</Button>
       </form>
     </Form>

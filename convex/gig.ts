@@ -17,14 +17,21 @@ export const create = mutation({
             throw new Error("Unauthorized");
         }
 
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_token", (q) =>
+                q.eq("tokenIdentifier", identity.tokenIdentifier)
+            )
+            .unique();
+
         const gig = await ctx.db.insert("gigs", {
             title: args.title,
             description: args.description,
             subcategoryId: args.subcategoryId as Id<"subcategories">,
-            sellerId: identity.subject as Id<"users">,
+            sellerId: user?._id!,
             published: args.published || false,
             clicks: 0,
-        });
+        })
 
         return gig;
     },
@@ -229,4 +236,41 @@ export const get = query({
 
         return gig;
     },
+});
+
+export const getSeller = query({
+    args: { id: v.id("users") },
+    handler: async (ctx, args) => {
+        const seller = ctx.db.get(args.id);
+        return seller;
+    },
+});
+
+export const getCategoryAndSubcategory = query({
+    args: {
+        gigId: v.id("gigs"),
+    },
+    handler: async (ctx, args) => {
+        const gig = await ctx.db.get(args.gigId);
+
+        if (!gig) {
+            throw new Error("Gig not found");
+        }
+
+        const subcategory = await ctx.db.get(gig.subcategoryId);
+
+        if (!subcategory) {
+            throw new Error("Subcategory not found");
+        }
+
+        const category = await ctx.db.get(subcategory.categoryId);
+        if (!category) {
+            throw new Error("Category not found");
+        }
+
+        return {
+            category: category.name,
+            subcategory: subcategory.name,
+        };
+    }
 });

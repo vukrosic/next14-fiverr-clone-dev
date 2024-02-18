@@ -3,33 +3,33 @@ import { Metadata } from "next"
 import Image from "next/image"
 import { SidebarNav } from "./components/sidebar-nav"
 
-export const metadata: Metadata = {
-  title: "Forms",
-  description: "Advanced form example using react-hook-form and Zod.",
-}
+// export const metadata: Metadata = {
+//   title: "Forms",
+//   description: "Advanced form example using react-hook-form and Zod.",
+// }
 
-const sidebarNavItems = [
-  {
-    title: "Profile",
-    href: "/examples/forms",
-  },
-  {
-    title: "Account",
-    href: "/examples/forms/account",
-  },
-  {
-    title: "Appearance",
-    href: "/examples/forms/appearance",
-  },
-  {
-    title: "Notifications",
-    href: "/examples/forms/notifications",
-  },
-  {
-    title: "Display",
-    href: "/examples/forms/display",
-  },
-]
+// const sidebarNavItems = [
+//   {
+//     title: "Profile",
+//     href: "/examples/forms",
+//   },
+//   {
+//     title: "Account",
+//     href: "/examples/forms/account",
+//   },
+//   {
+//     title: "Appearance",
+//     href: "/examples/forms/appearance",
+//   },
+//   {
+//     title: "Notifications",
+//     href: "/examples/forms/notifications",
+//   },
+//   {
+//     title: "Display",
+//     href: "/examples/forms/display",
+//   },
+// ]
 
 interface SettingsLayoutProps {
   children: React.ReactNode
@@ -38,7 +38,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <>
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <Image
           src="/examples/forms-light.png"
           width={1280}
@@ -65,10 +65,12 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="-mx-4 lg:w-1/5">
             <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex-1 lg:max-w-2xl">{children}</div>
-        </div>
-      </div>
+          </aside> */}
+      {/* <div className="flex-1 lg:max-w-2xl"> */}
+      {children}
+      {/* </div> */}
+      {/* </div>
+      </div> */}
     </>
   )
 }

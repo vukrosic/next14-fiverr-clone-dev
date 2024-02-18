@@ -14,33 +14,29 @@ import { Overlay } from "./overlay";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import { useQuery } from "convex/react";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface GigCardProps {
     id: string;
+    sellerId: string;
     title: string;
     description: string;
-    price: number;
-    storageId?: string;
-    ownerId: string;
-    ownerName: string;
     createdAt: number;
     isFavorite: boolean;
 };
 
 export const GigCard = ({
     id,
+    sellerId,
     title,
     description,
-    price,
-    storageId,
-    ownerId,
-    ownerName,
     createdAt,
     isFavorite
 }: GigCardProps) => {
     const { userId } = useAuth();
-
-    const ownerLabel = userId === ownerId ? "You" : ownerName;
+    const seller = useQuery(api.gig.getSeller, { id: sellerId as Id<"users"> });
+    // const ownerLabel = userId === ownerId ? "You" : ownerName;
     const createdAtLabel = formatDistanceToNow(createdAt, { addSuffix: true });
 
     const {
@@ -63,14 +59,20 @@ export const GigCard = ({
         }
     }
 
+    if (seller === undefined) {
+        return (
+            <GigCard.Skeleton />
+        )
+    }
+
     return (
-        <Link href={`/gig/${id}`}>
+        <Link href={`/${seller?.username}/${id}`}>
             <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden">
                 <div className="relative flex-1 bg-blue-50">
-                    <ConvexImage
+                    {/* <ConvexImage
                         storageId={storageId}
                         title={title}
-                    />
+                    /> */}
                     <Overlay />
                     <Actions
                         id={id}
@@ -89,7 +91,7 @@ export const GigCard = ({
                 <Footer
                     isFavorite={isFavorite}
                     title={title}
-                    ownerLabel={ownerLabel}
+                    ownerLabel={"Vuk"}
                     createdAtLabel={createdAtLabel}
                     onClick={toggleFavorite}
                     disabled={favoritePending || unfavoritePending}

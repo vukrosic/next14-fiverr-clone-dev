@@ -73,3 +73,68 @@ export const get = query({
         return gigsWithFavorite;
     },
 });
+
+
+
+export const getGigsWithOrderAmountAndRevenue = query({
+    handler: async (ctx) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            throw new Error("Unauthorized");
+        }
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_token", (q) =>
+                q.eq("tokenIdentifier", identity.tokenIdentifier)
+            )
+            .unique();
+
+        if (!user) {
+            throw new Error("Couldn't authenticate user");
+        }
+
+        const gigs = await ctx.db
+            .query("gigs")
+            .withIndex("by_sellerId", (q) => q.eq("sellerId", user._id))
+            .order("desc")
+            .collect();
+
+        const gigsWithOrderAmount = await Promise.all(
+            gigs.map(async (gig) => {
+                const orders = await ctx.db
+                    .query("orders")
+                    .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+                    .collect();
+
+                const orderAmount = orders.length;
+
+                return {
+                    ...gig,
+                    orderAmount,
+                };
+            })
+        );
+
+        const gigsWithOrderAmountAndRevenue = await Promise.all(
+            gigsWithOrderAmount.map(async (gig) => {
+                const offers = await ctx.db
+                    .query("offers")
+                    .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+                    .collect();
+
+                const totalRevenue = offers.reduce((acc, offer) => acc + offer.price, 0);
+
+                return {
+                    ...gig,
+                    totalRevenue,
+                };
+            })
+        );
+
+
+
+        return gigsWithOrderAmountAndRevenue
+    },
+});

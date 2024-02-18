@@ -45,9 +45,10 @@ export default defineSchema({
         description: v.string(),
         sellerId: v.id("users"),
         subcategoryId: v.id("subcategories"),
-        published: v.boolean(),
+        published: v.optional(v.boolean()),
         clicks: v.number(),
     })
+        .index("by_sellerId", ["sellerId"])
         .searchIndex("search_title", {
             searchField: "title",
         }),
@@ -58,11 +59,15 @@ export default defineSchema({
         price: v.number(),
         delivery_time: v.string(),
         revisions: v.number(),
-    }),
+    })
+        .index("by_gigId", ["gigId"]),
     orders: defineTable({
         offerId: v.id("offers"),
-        userId: v.id("users"),
-    }),
+        gigId: v.id("gigs"),
+        buyerId: v.id("users"),
+    })
+        .index("by_buyerId", ["buyerId"])
+        .index("by_gigId", ["gigId"]),
     gigMedia: defineTable({
         storageId: v.id("_storage"),
         format: v.string(),

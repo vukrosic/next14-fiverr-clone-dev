@@ -16,7 +16,7 @@ export const store = mutation({
                 q.eq("tokenIdentifier", identity.tokenIdentifier)
             )
             .unique();
-        console.log(identity)
+
         if (user !== null) {
             // If we've seen this identity before but the name has changed, patch the value.
             if (user.username !== identity.nickname) {
