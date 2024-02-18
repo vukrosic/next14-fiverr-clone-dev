@@ -56,6 +56,7 @@ export default defineSchema({
         gigId: v.id("gigs"),
         title: v.string(),
         description: v.string(),
+        tier: v.string(),
         price: v.number(),
         delivery_time: v.string(),
         revisions: v.number(),

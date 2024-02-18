@@ -48,10 +48,6 @@ export const send = mutation({
     },
 });
 
-
-
-
-
 export const get = query({
     handler: async (ctx) => {
         return await ctx.db
