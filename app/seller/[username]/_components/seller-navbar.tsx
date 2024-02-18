@@ -96,10 +96,10 @@ export const SellerNavbar = () => {
                                             </a>
                                         </NavigationMenuLink>
                                     </li>
-                                    <ListItem href="/docs" title="Gigs">
+                                    <ListItem href={`/seller/${currentUser?.username}/manage-gigs`} title="Gigs">
                                         Manage, create and edit your gigs here.
                                     </ListItem>
-                                    <ListItem href="/docs/installation" title="Profile">
+                                    <ListItem href={`/seller/${currentUser}/profile`} title="Profile">
                                         Manage and edit your profile. Present yourself to the world.
                                     </ListItem>
                                 </ul>

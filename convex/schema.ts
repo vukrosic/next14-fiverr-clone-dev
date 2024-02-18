@@ -74,7 +74,8 @@ export default defineSchema({
     subcategories: defineTable({
         categoryId: v.id("categories"),
         name: v.string(),
-    }),
+    })
+        .index("by_category", ["categoryId"]),
     searchTags: defineTable({
         gigIds: v.array(v.string()),
     }),
