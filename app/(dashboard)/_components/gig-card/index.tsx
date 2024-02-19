@@ -49,7 +49,6 @@ export const GigCard = ({
     } = useApiMutation(api.gig.unfavorite);
 
     const toggleFavorite = () => {
-        console.log(isFavorite);
         if (isFavorite) {
             unfavorite({ id })
                 .catch(() => toast.error("Failed to unfavorite"));

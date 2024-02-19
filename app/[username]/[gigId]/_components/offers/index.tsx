@@ -14,7 +14,7 @@ export const Offers = ({
 }: OffersProps) => {
     return (
         // <div className="flex sm:sticky sm:fixed bg-white right-4 top-4 z-[1] bg-blue-500">
-        <div className="sticky h-fit right-4 top-4 z-[1]">
+        <div className=" sticky h-fit top-4 z-[1]">
             {/* Buttons */}
             <div className="flex ml-auto">
                 <TooltipProvider>

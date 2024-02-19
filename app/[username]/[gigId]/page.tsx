@@ -5,6 +5,8 @@ import { Header } from "./_components/header"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { Offers } from "./_components/offers";
+import { Seller } from "./_components/seller";
+import { Images } from "./_components/images";
 
 
 interface PageProps {
@@ -18,18 +20,34 @@ const GigPage = ({
     params
 }: PageProps) => {
     const gig = useQuery(api.gig.get, { id: params.gigId as Id<"gigs"> });
+    const seller = useQuery(api.users.getUserByUsername, { username: params.username });
     const categoryAndSubcategory = useQuery(api.gig.getCategoryAndSubcategory, { gigId: params.gigId as Id<"gigs"> });
     const offers = useQuery(api.offers.get, { gigId: params.gigId as Id<"gigs"> });
+    const orders = useQuery(api.orders.getByGig, { gigId: params.gigId as Id<"gigs"> });
+    const reviews = useQuery(api.reviews.get, { gigId: params.gigId as Id<"gigs"> });
 
-    if (gig === undefined || categoryAndSubcategory === undefined || offers == undefined) {
+    if (gig === undefined || reviews === undefined || orders === undefined || seller === undefined || categoryAndSubcategory === undefined || offers == undefined) {
         return <div>Loading...</div>
     }
-    console.log(offers)
+
+    if (gig === null || orders === null || seller === null || categoryAndSubcategory === null || offers === null) {
+        return <div>Not found</div>
+    }
+
     return (
-        <div className="flex flex-col sm:flex-row w-full sm:justify-center h-[3000px]">
-            <Header
-                {...categoryAndSubcategory}
-            />
+        <div className="flex flex-col sm:flex-row w-full sm:justify-center h-[3000px] p-0 sm:p-6 md:p-16 lg:px-64 space-x-0 sm:space-x-3 lg:space-x-16">
+            <div className="w-full">
+                <Header
+                    {...categoryAndSubcategory}
+                />
+                <h1 className="pb-12 text-3xl font-bold break-words text-[#3F3F3F]">{gig.title}</h1>
+                <Seller
+                    seller={seller}
+                    orders={orders}
+                    reviews={reviews}
+                />
+                <Images />
+            </div>
             <Offers
                 offers={offers}
             />

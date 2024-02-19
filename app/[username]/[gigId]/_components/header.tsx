@@ -24,13 +24,14 @@ export const Header = ({ category, subcategory }: HeaderProps) => {
             w-full 
             h-fit 
             items-center 
-            justify-center 
+            justify-start 
             space-x-2
             sm:space-x-1
             md:space-x-3 
             text-sm 
-            md:text-md 
-            lg:text-lg"
+            md:text-md
+            bg-red-100
+            "
         >
             <Home className="w-4 h-4" />
             <p className="text-muted-foreground">/</p>

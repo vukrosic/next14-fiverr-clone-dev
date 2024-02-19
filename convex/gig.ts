@@ -66,20 +66,6 @@ export const remove = mutation({
 });
 
 
-export const generateUploadUrl = mutation(async (ctx) => {
-    return await ctx.storage.generateUploadUrl();
-});
-
-
-export const getImageUrl = query({
-    args: { storageId: v.optional(v.id("_storage")) },
-    handler: async (ctx, args) => {
-        if (!args.storageId) return null;
-        return await ctx.storage.getUrl(args.storageId);
-    },
-});
-
-
 export const update = mutation({
     args: { id: v.id("gigs"), title: v.string() },
     handler: async (ctx, args) => {

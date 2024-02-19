@@ -12,7 +12,8 @@ export const ConvexImage = ({
     storageId,
     title
 }: ConvexImageProps) => {
-    const imageUrl = useQuery(api.gig.getImageUrl, { storageId: storageId as Id<"_storage"> });
+    //const imageUrl = useQuery(api.gig.getImageUrl, { storageId: storageId as Id<"_storage"> });
+    const imageUrl = useQuery(api.gigMedia.getMediaUrl, { storageId: storageId as Id<"_storage"> });
     return (
         <div className="aspect-video relative">
             <Image

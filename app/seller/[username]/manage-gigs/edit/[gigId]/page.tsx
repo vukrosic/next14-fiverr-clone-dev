@@ -15,9 +15,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Description } from "@/components/description";
 import { ConvexImage } from "@/components/convex-image";
-import { TitleEditor } from "@/app/gig/[gigId]/edit/title-editor";
-import { PriceEditor } from "@/app/gig/[gigId]/edit/price-editor";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 interface EditdPageProps {
@@ -34,11 +33,11 @@ const Edit = ({ params }: EditdPageProps) => {
 
     const identity = useAuth();
 
-    const generateUploadUrl = useMutation(api.gig.generateUploadUrl);
+    const generateUploadUrl = useMutation(api.helpers.generateUploadUrl);
 
     const imageInput = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    // const sendImage = useMutation(api.gig.sendImage);
+    const sendImage = useMutation(api.gigMedia.sendImage);
 
 
     // const imageUrl = useQuery(api.gig.getImageUrl, { storageId: gig?.storageId as Id<"_storage"> });
@@ -84,7 +83,10 @@ const Edit = ({ params }: EditdPageProps) => {
         }
         const { storageId } = json;
         // Step 3: Save the newly allocated storage id to the database
-        //await sendImage({ storageId, id: gig._id, author: "name" });
+        await sendImage({ storageId, format: "image", gigId: gig._id })
+            .catch(() => {
+                toast.error("Failed to upload. Maximum 5 files allowed.");
+            });
 
         setSelectedImage(null);
         imageInput.current!.value = "";
@@ -110,17 +112,16 @@ const Edit = ({ params }: EditdPageProps) => {
                     </Button>
                 </div>
 
-                <TitleEditor
+                {/* <TitleEditor
                     id={gig._id}
                     title={gig.title}
-                />
+                /> */}
 
-                <div className="relative aspect-video overflow-hidden">
-                    {/* <ConvexImage
-                        storageId={gig.storageId}
+                {/* <div className="relative aspect-video overflow-hidden">
+                    <ConvexImage
                         title={gig.title}
-                    /> */}
-                </div>
+                    />
+                </div> */}
 
                 <form onSubmit={handleSendImage} className="flex space-x-2">
                     <Input
@@ -140,10 +141,10 @@ const Edit = ({ params }: EditdPageProps) => {
                 <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                     <p className="text-muted-foreground">👨‍🎨 Creator: {"Vuk Rosic"}</p>
                 </div>
-                <PriceEditor
+                {/* <PriceEditor
                     id={gig._id}
                     price={5}
-                />
+                /> */}
             </div>
             {/* <Description
                 id={gig._id}

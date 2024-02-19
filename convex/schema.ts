@@ -11,18 +11,21 @@ export default defineSchema({
         profileImageUrl: v.optional(v.string()),
         favoritedSellerIds: v.optional(v.array(v.string())),
         tokenIdentifier: v.string(),
+        customTag: v.optional(v.string()),
     })
         .index("by_token", ["tokenIdentifier"])
         .index("by_username", ["username"]),
     reviews: defineTable({
         authorId: v.id("users"),
         sellerId: v.id("users"),
+        gigId: v.id("gigs"),
         comment: v.string(),
         communication_level: v.number(),
         recommend_to_a_friend: v.number(),
         service_as_described: v.number(),
-        orderId: v.string(),
-    }),
+    })
+        .index("by_sellerId", ["sellerId"])
+        .index("by_gigId", ["gigId"]),
     skills: defineTable({
         skill: v.string(),
         userId: v.id("users"),
@@ -66,6 +69,7 @@ export default defineSchema({
         offerId: v.id("offers"),
         gigId: v.id("gigs"),
         buyerId: v.id("users"),
+        fulfillmentStatus: v.string(),
     })
         .index("by_buyerId", ["buyerId"])
         .index("by_gigId", ["gigId"]),
@@ -73,7 +77,8 @@ export default defineSchema({
         storageId: v.id("_storage"),
         format: v.string(),
         gigId: v.id("gigs"),
-    }),
+    })
+        .index("by_gigId", ["gigId"]),
     categories: defineTable({
         name: v.string(),
     }),
@@ -111,14 +116,6 @@ export default defineSchema({
         .index("by_gig", ["gigId"])
         .index("by_user_gig", ["userId", "gigId"])
         .index("by_user", ["userId"]),
-    gigOffers: defineTable({
-        gigId: v.id("gigs"),
-        offerId: v.id("offers"),
-    }),
-    orderReviews: defineTable({
-        orderId: v.id("orders"),
-        reviewId: v.id("reviews"),
-    }),
     gigSearchTags: defineTable({
         gigId: v.id("gigs"),
         searchTagId: v.id("searchTags"),
