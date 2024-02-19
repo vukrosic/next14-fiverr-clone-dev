@@ -9,6 +9,7 @@ interface OffersProps {
 export const Content = ({
     offer
 }: OffersProps) => {
+    const revisionText = offer.revisions === 1 ? "Revision" : "Revisions";
     return (
         <div className="space-y-4">
             <div className="flex pb-4 font-bold items-center">
@@ -23,10 +24,11 @@ export const Content = ({
                 </div>
                 <div className="flex space-x-2">
                     <RefreshCcw />
-                    <p>{offer.revisions} Revisions</p>
+                    <p>{offer.revisions} {revisionText}</p>
                 </div>
             </div>
             <Button className="w-full">Order Now</Button>
+            <Button className="w-full" variant={"ghost"}>Send Message</Button>
         </div>
     )
 }

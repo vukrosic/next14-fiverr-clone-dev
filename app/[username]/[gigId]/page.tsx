@@ -26,16 +26,17 @@ const GigPage = ({
     }
     console.log(offers)
     return (
-        <div className="px-36">
-            <div className="flex space-x-16">
-                <Header
-                    {...categoryAndSubcategory}
-                />
-                <Offers
-                    offers={offers}
-                />
-            </div>
+        <div className="flex flex-col sm:flex-row w-full sm:justify-center h-[3000px]">
+            <Header
+                {...categoryAndSubcategory}
+            />
+            <Offers
+                offers={offers}
+            />
+            {/* <h1 className="bg-red-200">This is title</h1>
+            <div className="flex sm:sticky w-full sm:w-[300px] sm:h-[300px] sm:right-4 sm:top-4 z-[1] bg-blue-500">asdf</div> */}
         </div>
+
     )
 }
 

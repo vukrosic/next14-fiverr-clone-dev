@@ -17,40 +17,26 @@ interface HeaderProps {
 
 export const Header = ({ category, subcategory }: HeaderProps) => {
     return (
-        <div className="flex px-36 py-8">
-            <div className="flex items-center space-x-3 ">
-                <Home className="w-4 h-4" />
-                <p className="text-muted-foreground">/</p>
-                <Link href={`/${category}`}>{category}</Link>
-                <p className="text-muted-foreground">/</p>
-                <Link href={`/${category}/${subcategory}`}>{subcategory}</Link>
-            </div>
-            <div className="flex ml-auto">
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant={"ghost"}>
-                                <Star className="w-5 h-5" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Favorite</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button variant={"ghost"}>
-                                <Clipboard className="w-5 h-5" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Copy URL</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
+        <div
+            className="
+            flex 
+            py-8 
+            w-full 
+            h-fit 
+            items-center 
+            justify-center 
+            space-x-2
+            sm:space-x-1
+            md:space-x-3 
+            text-sm 
+            md:text-md 
+            lg:text-lg"
+        >
+            <Home className="w-4 h-4" />
+            <p className="text-muted-foreground">/</p>
+            <Link href={`/${category}`}>{category}</Link>
+            <p className="text-muted-foreground">/</p>
+            <Link href={`/${category}/${subcategory}`}>{subcategory}</Link>
         </div>
     )
 }
