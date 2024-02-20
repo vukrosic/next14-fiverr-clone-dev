@@ -3,7 +3,7 @@
 import { FileUpload } from "@/app/create/_components/file-upload";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
@@ -17,6 +17,8 @@ import { Description } from "@/components/description";
 import { ConvexImage } from "@/components/convex-image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Images } from "@/app/[username]/[gigId]/_components/images";
+import { TitleEditor } from "@/app/gig/omg/edit/title-editor";
 
 
 interface EditdPageProps {
@@ -33,7 +35,7 @@ const Edit = ({ params }: EditdPageProps) => {
 
     const identity = useAuth();
 
-    const generateUploadUrl = useMutation(api.helpers.generateUploadUrl);
+    const generateUploadUrl = useMutation(api.gigMedia.generateUploadUrl);
 
     const imageInput = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -62,9 +64,13 @@ const Edit = ({ params }: EditdPageProps) => {
     //         </div>
     //     )
 
+    console.log(gig.title);
+
     async function handleSendImage(event: FormEvent) {
         event.preventDefault();
-        if (!gig) return;
+        if (gig === undefined) return;
+
+        const nonNullableGig = gig as Doc<"gigs">;
 
         // Step 1: Get a short-lived upload URL
         const postUrl = await generateUploadUrl();
@@ -83,8 +89,9 @@ const Edit = ({ params }: EditdPageProps) => {
         }
         const { storageId } = json;
         // Step 3: Save the newly allocated storage id to the database
-        await sendImage({ storageId, format: "image", gigId: gig._id })
-            .catch(() => {
+        await sendImage({ storageId, format: "image", gigId: nonNullableGig._id })
+            .catch((error) => {
+                console.log(error);
                 toast.error("Failed to upload. Maximum 5 files allowed.");
             });
 
@@ -112,16 +119,15 @@ const Edit = ({ params }: EditdPageProps) => {
                     </Button>
                 </div>
 
-                {/* <TitleEditor
+                <TitleEditor
                     id={gig._id}
                     title={gig.title}
-                /> */}
+                />
 
-                {/* <div className="relative aspect-video overflow-hidden">
-                    <ConvexImage
-                        title={gig.title}
-                    />
-                </div> */}
+                <Images
+                    images={gig.images}
+                    title={gig.title}
+                />
 
                 <form onSubmit={handleSendImage} className="flex space-x-2">
                     <Input
@@ -134,10 +140,11 @@ const Edit = ({ params }: EditdPageProps) => {
                     />
                     <Button
                         type="submit"
-                        className={cn("w-fit", selectedImage === null && "cursor-not-allowed")}
+                        disabled={selectedImage === null}
+                        className="w-fit"
                     >Upload Image</Button>
                 </form>
-
+                asdasd
                 <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                     <p className="text-muted-foreground">👨‍🎨 Creator: {"Vuk Rosic"}</p>
                 </div>

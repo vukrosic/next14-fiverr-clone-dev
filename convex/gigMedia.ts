@@ -14,8 +14,8 @@ export const sendImage = mutation({
             .withIndex("by_gigId", (q) => q.eq("gigId", args.gigId))
             .collect();
 
-        if (gigMedia.length <= 1) {
-            throw new Error("You can upload up to 1 media files. Please delete a media file before uploading a new one.");
+        if (gigMedia.length >= 5) {
+            throw new Error("You can upload up to 5 media files. Please delete a media file before uploading a new one.");
         }
 
         await ctx.db.insert("gigMedia", {
@@ -42,5 +42,22 @@ export const getMediaUrl = query({
     handler: async (ctx, args) => {
         if (!args.storageId) return null;
         return await ctx.storage.getUrl(args.storageId);
+    },
+});
+
+export const remove = mutation({
+    args: { storageId: v.id("_storage") },
+    handler: async (ctx, args) => {
+        const media = await ctx.db.query("gigMedia")
+            .withIndex("by_storageId", (q) => q.eq("storageId", args.storageId))
+            .unique();
+
+        if (!media) {
+            throw new Error("Media not found");
+        }
+
+        await ctx.db.delete(media._id);
+
+        await ctx.storage.delete(args.storageId);
     },
 });

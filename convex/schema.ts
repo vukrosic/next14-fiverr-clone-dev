@@ -78,7 +78,8 @@ export default defineSchema({
         format: v.string(),
         gigId: v.id("gigs"),
     })
-        .index("by_gigId", ["gigId"]),
+        .index("by_gigId", ["gigId"])
+        .index("by_storageId", ["storageId"]),
     categories: defineTable({
         name: v.string(),
     }),

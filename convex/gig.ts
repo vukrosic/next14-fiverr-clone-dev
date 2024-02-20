@@ -218,9 +218,31 @@ export const unfavorite = mutation({
 export const get = query({
     args: { id: v.id("gigs") },
     handler: async (ctx, args) => {
-        const gig = ctx.db.get(args.id);
+        const gig = await ctx.db.get(args.id);
 
-        return gig;
+        // get images
+        const images = await ctx.db.query("gigMedia")
+            .withIndex("by_gigId", (q) => q.eq("gigId", args.id))
+            .collect();
+
+        const imagesWithUrls = await Promise.all(images.map(async (image) => {
+            const imageUrl = await ctx.storage.getUrl(image.storageId);
+            if (!imageUrl) {
+                throw new Error("Image not found");
+            }
+            return { ...image, url: imageUrl };
+        }));
+
+        if (gig !== null) {
+            const gigWithImage = {
+                ...gig,
+                images: imagesWithUrls,
+            };
+            return gigWithImage;
+        } else {
+            throw new Error("Gig not found");
+        }
+
     },
 });
 

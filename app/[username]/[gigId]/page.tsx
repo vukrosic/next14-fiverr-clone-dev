@@ -46,7 +46,9 @@ const GigPage = ({
                     orders={orders}
                     reviews={reviews}
                 />
-                <Images />
+                <Images
+                    images={gig.images}
+                />
             </div>
             <Offers
                 offers={offers}
