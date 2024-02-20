@@ -15,11 +15,13 @@ import { Actions } from "@/app/seller/[username]/manage-gigs/edit/[gigId]/_compo
 interface ImagesProps {
     images: ImageWithUrlType[];
     title: string;
+    allowDelete: boolean;
 }
 
 export const Images = ({
     images,
-    title
+    title,
+    allowDelete
 }: ImagesProps) => {
     return (
         <Carousel>
@@ -30,13 +32,15 @@ export const Images = ({
                             key={image._id}
                         >
                             <AspectRatio ratio={16 / 9}>
-                                <Actions
-                                    side="bottom"
-                                    sideOffset={10}
-                                    storageId={image.storageId}
-                                >
-                                    <Trash2 />
-                                </Actions>
+                                {allowDelete && (
+                                    <Actions
+                                        side="bottom"
+                                        sideOffset={10}
+                                        storageId={image.storageId}
+                                    >
+                                        <Trash2 />
+                                    </Actions>
+                                )}
                                 <Image
                                     src={image.url || 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/2560px-Placeholder_view_vector.svg.png'}
                                     alt={title}

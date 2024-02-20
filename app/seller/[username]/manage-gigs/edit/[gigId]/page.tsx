@@ -17,7 +17,7 @@ import { Description } from "@/components/description";
 import { ConvexImage } from "@/components/convex-image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Images } from "@/app/[username]/[gigId]/_components/images";
+import { Images } from "@/components/images";
 import { TitleEditor } from "@/app/gig/omg/edit/title-editor";
 
 
@@ -38,7 +38,7 @@ const Edit = ({ params }: EditdPageProps) => {
     const generateUploadUrl = useMutation(api.gigMedia.generateUploadUrl);
 
     const imageInput = useRef<HTMLInputElement>(null);
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
     const sendImage = useMutation(api.gigMedia.sendImage);
 
 
@@ -76,26 +76,47 @@ const Edit = ({ params }: EditdPageProps) => {
         const postUrl = await generateUploadUrl();
 
         // Step 2: POST the file to the URL
-        const result = await fetch(postUrl, {
-            method: "POST",
-            headers: { "Content-Type": selectedImage!.type },
-            body: selectedImage,
-        });
+        // const result = await fetch(postUrl, {
+        //     method: "POST",
+        //     headers: { "Content-Type": selectedImage!.type },
+        //     body: selectedImage,
+        // });
 
-        const json = await result.json();
+        // const json = await result.json();
 
-        if (!result.ok) {
-            throw new Error(`Upload failed: ${JSON.stringify(json)}`);
-        }
-        const { storageId } = json;
-        // Step 3: Save the newly allocated storage id to the database
-        await sendImage({ storageId, format: "image", gigId: nonNullableGig._id })
-            .catch((error) => {
-                console.log(error);
-                toast.error("Failed to upload. Maximum 5 files allowed.");
+        // if (!result.ok) {
+        //     throw new Error(`Upload failed: ${JSON.stringify(json)}`);
+        // }
+        // const { storageId } = json;
+        // // Step 3: Save the newly allocated storage id to the database
+        // await sendImage({ storageId, format: "image", gigId: nonNullableGig._id })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         toast.error("Failed to upload. Maximum 5 files allowed.");
+        //     });
+
+        await Promise.all(selectedImages.map(async (image) => {
+            const result = await fetch(postUrl, {
+                method: "POST",
+                headers: { "Content-Type": image.type },
+                body: image,
             });
 
-        setSelectedImage(null);
+            const json = await result.json();
+
+            if (!result.ok) {
+                throw new Error(`Upload failed: ${JSON.stringify(json)}`);
+            }
+            const { storageId } = json;
+            // Step 3: Save the newly allocated storage id to the database
+            await sendImage({ storageId, format: "image", gigId: nonNullableGig._id })
+                .catch((error) => {
+                    console.log(error);
+                    toast.error("Maximum 5 files reached.");
+                });
+        }));
+
+        setSelectedImages([]);
         imageInput.current!.value = "";
     }
 
@@ -127,6 +148,7 @@ const Edit = ({ params }: EditdPageProps) => {
                 <Images
                     images={gig.images}
                     title={gig.title}
+                    allowDelete={true}
                 />
 
                 <form onSubmit={handleSendImage} className="flex space-x-2">
@@ -134,17 +156,17 @@ const Edit = ({ params }: EditdPageProps) => {
                         type="file"
                         accept="image/*"
                         ref={imageInput}
-                        onChange={(event) => setSelectedImage(event.target.files![0])}
+                        onChange={(event) => setSelectedImages(Array.from(event.target.files || []))}
+                        multiple
                         className="cursor-pointer w-fit bg-zinc-100 text-zinc-700 border-zinc-300 hover:bg-zinc-200 hover:border-zinc-400 focus:border-zinc-400 focus:bg-zinc-200"
-                        disabled={selectedImage !== null}
+                        disabled={selectedImages.length !== 0}
                     />
                     <Button
                         type="submit"
-                        disabled={selectedImage === null}
+                        disabled={selectedImages.length === 0}
                         className="w-fit"
                     >Upload Image</Button>
                 </form>
-                asdasd
                 <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                     <p className="text-muted-foreground">👨‍🎨 Creator: {"Vuk Rosic"}</p>
                 </div>

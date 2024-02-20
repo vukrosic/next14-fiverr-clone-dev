@@ -22,6 +22,8 @@ const buttonVariants = cva(
           "bg-indigo-700 text-white hover:bg-indigo-800/80",
         blueSecondary:
           "text-white hover:bg-indigo-900/80",
+        white:
+          "bg-secondary text-secondary-foreground hover:bg-zinc-100 select-none"
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { Offers } from "./_components/offers";
 import { Seller } from "./_components/seller";
-import { Images } from "./_components/images";
+import { Images } from "../../../components/images";
 
 
 interface PageProps {
@@ -48,6 +48,8 @@ const GigPage = ({
                 />
                 <Images
                     images={gig.images}
+                    title={gig.title}
+                    allowDelete={false}
                 />
             </div>
             <Offers

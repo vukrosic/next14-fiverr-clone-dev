@@ -49,7 +49,7 @@ export const Actions = ({
                 onConfirm={onDelete}
             >
                 <Button
-                    variant="ghost"
+                    variant="white"
                     className="p-3 cursor-pointer text-sm w-full justify-start font-normal"
                 >
                     <Trash2 className="h-4 w-4 mr-2" />
