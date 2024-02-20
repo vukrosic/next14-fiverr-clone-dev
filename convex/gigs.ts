@@ -138,3 +138,73 @@ export const getGigsWithOrderAmountAndRevenue = query({
         return gigsWithOrderAmountAndRevenue
     },
 });
+
+export const getBySellerName = query({
+    args: {
+        sellerName: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_username", (q) => q.eq("username", args.sellerName))
+            .unique();
+
+        if (!user) {
+            return null;
+        }
+
+        const gigs = await ctx.db
+            .query("gigs")
+            .withIndex("by_sellerId", (q) => q.eq("sellerId", user._id))
+            .collect();
+
+        return gigs;
+    },
+});
+
+export const getGigsWithImages = query({
+    args: { sellerUsername: v.string() },
+    handler: async (ctx, args) => {
+
+        const seller = await ctx.db.query("users")
+            .withIndex("by_username", (q) => q.eq("username", args.sellerUsername))
+            .unique();
+
+        if (seller === null) {
+            throw new Error("Seller not found");
+        }
+
+        const gigs = await ctx.db.query("gigs")
+            .withIndex("by_sellerId", (q) => q.eq("sellerId", seller._id))
+            .collect();
+
+        if (gigs === null) {
+            throw new Error("Gigs not found");
+        }
+
+        const gigsWithImages = await Promise.all(gigs.map(async (gig) => {
+
+            // get images
+            const images = await ctx.db.query("gigMedia")
+                .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+                .collect();
+
+            const imagesWithUrls = await Promise.all(images.map(async (image) => {
+                const imageUrl = await ctx.storage.getUrl(image.storageId);
+                if (!imageUrl) {
+                    throw new Error("Image not found");
+                }
+                return { ...image, url: imageUrl };
+            }));
+
+            const gigWithImages = {
+                ...gig,
+                images: imagesWithUrls,
+            };
+
+            return gigWithImages;
+        }));
+
+        return gigsWithImages;
+    }
+})

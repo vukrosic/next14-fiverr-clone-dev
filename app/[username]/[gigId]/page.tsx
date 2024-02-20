@@ -30,7 +30,7 @@ const GigPage = ({
     const categoryAndSubcategory = useQuery(api.gig.getCategoryAndSubcategory, { gigId: params.gigId as Id<"gigs"> });
     const offers = useQuery(api.offers.get, { gigId: params.gigId as Id<"gigs"> });
     const orders = useQuery(api.orders.getByGig, { gigId: params.gigId as Id<"gigs"> });
-    const reviews = useQuery(api.reviews.get, { gigId: params.gigId as Id<"gigs"> });
+    const reviews = useQuery(api.reviews.getByGig, { gigId: params.gigId as Id<"gigs"> });
 
     if (gig === undefined || reviews === undefined || orders === undefined || categoryAndSubcategory === undefined || offers == undefined) {
         return <div>Loading...</div>
@@ -44,7 +44,7 @@ const GigPage = ({
 
     return (
         <div>
-            <div className="flex flex-col sm:flex-row w-full sm:justify-center p-0 sm:p-6 md:p-16 lg:px-64 space-x-0 sm:space-x-3 lg:space-x-16">
+            <div className="flex flex-col sm:flex-row w-full sm:justify-center space-x-0 sm:space-x-3 lg:space-x-16">
                 <div className="w-full space-y-8">
                     <Header
                         {...categoryAndSubcategory}

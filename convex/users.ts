@@ -102,3 +102,52 @@ export const getCurrentUser = query({
         return user;
     }
 });
+
+
+export const generateUploadUrl = mutation(async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+});
+
+export const getLanguagesByUsername = query({
+    args: { username: v.string() },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_username", (q) => q.eq("username", args.username))
+            .unique();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const languages = await ctx.db
+            .query("languages")
+            .withIndex("by_userId", (q) => q.eq("userId", user._id))
+            .collect();
+
+        return languages;
+    },
+});
+
+export const getCountryByUsername = query({
+    args: { username: v.string() },
+    handler: async (ctx, args) => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_username", (q) => q.eq("username", args.username))
+            .unique();
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const country = await ctx.db.query("countries")
+            .withIndex("by_userId", (q) => q.eq("userId", user._id))
+            .unique();
+
+        if (!country) {
+            throw new Error("Country not found");
+        }
+        return country;
+    },
+});

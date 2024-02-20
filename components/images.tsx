@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Carousel,
     CarouselContent,
@@ -11,6 +13,7 @@ import Image from "next/image"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { MoreHorizontal, Trash2 } from "lucide-react"
 import { Actions } from "@/app/seller/[username]/manage-gigs/edit/[gigId]/_components/actions"
+import { useState } from "react"
 
 interface ImagesProps {
     images: ImageWithUrlType[];
@@ -23,8 +26,10 @@ export const Images = ({
     title,
     allowDelete
 }: ImagesProps) => {
+    const [isHovered, setIsHovered] = useState(false);
     return (
-        <Carousel className="select-none">
+        <Carousel className="select-none" onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}>
             <CarouselContent>
                 {images.map((image) => {
                     return (
@@ -52,8 +57,14 @@ export const Images = ({
                     )
                 })}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious
+                className={`absolute top-1/2 left-2 transform -translate-y-1/2 transition-opacity duration-300 cursor-pointer ${isHovered ? 'opacity-45' : 'opacity-0'
+                    }`}
+            />
+            <CarouselNext
+                className={`absolute top-1/2 right-2 transform -translate-y-1/2 transition-opacity duration-300 cursor-pointer ${isHovered ? 'opacity-45' : 'opacity-0'
+                    }`}
+            />
         </Carousel>
     )
 }

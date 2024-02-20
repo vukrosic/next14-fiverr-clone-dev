@@ -25,6 +25,7 @@ import type * as offers from "../offers.js";
 import type * as orders from "../orders.js";
 import type * as reviews from "../reviews.js";
 import type * as schema from "../schema.js";
+import type * as skills from "../skills.js";
 import type * as stripe from "../stripe.js";
 import type * as users from "../users.js";
 
@@ -48,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   orders: typeof orders;
   reviews: typeof reviews;
   schema: typeof schema;
+  skills: typeof skills;
   stripe: typeof stripe;
   users: typeof users;
 }>;

@@ -20,3 +20,23 @@ export const getByGig = query({
         return orders;
     },
 });
+
+// export const getByUser = query({
+//     args: {
+//         userId: v.id("users"),
+//     },
+//     handler: async (ctx, args) => {
+//         const identity = await ctx.auth.getUserIdentity();
+
+//         if (!identity) {
+//             throw new Error("Unauthorized");
+//         }
+
+//         const orders = await ctx.db
+//             .query("orders")
+//             .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+//             .collect();
+
+//         return orders;
+//     },
+// });

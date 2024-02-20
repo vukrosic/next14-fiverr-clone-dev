@@ -29,7 +29,8 @@ export default defineSchema({
     skills: defineTable({
         skill: v.string(),
         userId: v.id("users"),
-    }),
+    })
+        .index("by_userId", ["userId"]),
     languages: defineTable({
         language: v.string(),
         userId: v.id("users"),
