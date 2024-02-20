@@ -11,3 +11,7 @@ export type GigWithImageType = Doc<"gigs"> & {
 export type ImageWithUrlType = Doc<"gigMedia"> & {
     url: string
 };
+
+export type SellerWithCountryType = Doc<"users"> & {
+    country: Doc<"countries">
+};

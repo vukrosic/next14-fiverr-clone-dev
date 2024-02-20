@@ -15,14 +15,14 @@ import { AlertOctagon } from "lucide-react";
 import { toast } from "sonner";
 
 interface DescriptionProps {
-    id: Id<"gigs">;
+    gigId: Id<"gigs">;
     initialContent?: string;
     editable: boolean;
     className?: string;
 }
 
 export const Description = ({
-    id,
+    gigId,
     initialContent,
     editable,
     className
@@ -38,7 +38,7 @@ export const Description = ({
         onEditorContentChange: (editor) => {
             if (JSON.stringify(editor.topLevelBlocks, null, 2).length < 20000) {
                 update({
-                    id: id,
+                    id: gigId,
                     description: JSON.stringify(editor.topLevelBlocks, null, 2)
                 })
             } else {

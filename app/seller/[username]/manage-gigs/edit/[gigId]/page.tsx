@@ -64,8 +64,6 @@ const Edit = ({ params }: EditdPageProps) => {
     //         </div>
     //     )
 
-    console.log(gig.title);
-
     async function handleSendImage(event: FormEvent) {
         event.preventDefault();
         if (gig === undefined) return;
@@ -130,7 +128,7 @@ const Edit = ({ params }: EditdPageProps) => {
         <>
             <div className="space-y-8 2xl:px-64 xl:px-36 md:px-12 px-12">
                 <div className="flex justify-end pr-2 space-x-2">
-                    <Link href={`/gig/${gig._id}`}>
+                    <Link href={`/${gig.seller.username}/${gig._id}`}>
                         <Button disabled={pending} variant={"secondary"}>
                             Preview
                         </Button>
@@ -170,17 +168,18 @@ const Edit = ({ params }: EditdPageProps) => {
                 <div className="flex rounded-md border border-zinc-300 items-center space-x-4 w-fit p-2 cursor-default">
                     <p className="text-muted-foreground">👨‍🎨 Creator: {"Vuk Rosic"}</p>
                 </div>
+                <h2 className="font-semibold">About this gig</h2>
                 {/* <PriceEditor
                     id={gig._id}
                     price={5}
                 /> */}
             </div>
-            {/* <Description
-                id={gig._id}
+            <Description
                 initialContent={gig.description}
                 editable={true}
-                className="pb-40 pt-6 2xl:px-[200px] xl:px-[90px] xs:px-[17px]"
-            /> */}
+                className="pb-40 2xl:px-[200px] xl:px-[90px] xs:px-[17px]"
+                gigId={gig._id}
+            />
         </>
     )
 }

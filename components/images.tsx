@@ -24,7 +24,7 @@ export const Images = ({
     allowDelete
 }: ImagesProps) => {
     return (
-        <Carousel>
+        <Carousel className="select-none">
             <CarouselContent>
                 {images.map((image) => {
                     return (

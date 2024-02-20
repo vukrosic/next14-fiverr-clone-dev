@@ -219,10 +219,55 @@ export const get = query({
     args: { id: v.id("gigs") },
     handler: async (ctx, args) => {
         const gig = await ctx.db.get(args.id);
+        if (gig === null) {
+            throw new Error("Gig not found");
+        }
+        const seller = await ctx.db.get(gig.sellerId as Id<"users">);
+
+        if (!seller) {
+            throw new Error("Seller not found");
+        }
+
+        const country = await ctx.db.query("countries")
+            .withIndex("by_userId", (q) => q.eq("userId", seller._id))
+            .unique();
+
+        if (country === null) {
+            throw new Error("Country not found");
+        }
+
+        // get languages
+        const languages = await ctx.db.query("languages")
+            .withIndex("by_userId", (q) => q.eq("userId", seller._id))
+            .collect();
+
+        const sellerWithCountryAndLanguages = {
+            ...seller,
+            country: country,
+            languages: languages,
+        };
+
+        const gigWithSeller = {
+            ...gig,
+            seller: sellerWithCountryAndLanguages
+        };
+
+        // get last fulfilment
+        const lastFulfilment = await ctx.db.query("orders")
+            .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+            .order("desc")
+            .first();
+
+
+        const gigWithSellerAndLastFulfilment = {
+            ...gigWithSeller,
+            lastFulfilment: lastFulfilment,
+        };
+
 
         // get images
         const images = await ctx.db.query("gigMedia")
-            .withIndex("by_gigId", (q) => q.eq("gigId", args.id))
+            .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
             .collect();
 
         const imagesWithUrls = await Promise.all(images.map(async (image) => {
@@ -233,16 +278,12 @@ export const get = query({
             return { ...image, url: imageUrl };
         }));
 
-        if (gig !== null) {
-            const gigWithImage = {
-                ...gig,
-                images: imagesWithUrls,
-            };
-            return gigWithImage;
-        } else {
-            throw new Error("Gig not found");
-        }
+        const gigWithSellerAndLastFulfilmentAndImages = {
+            ...gigWithSellerAndLastFulfilment,
+            images: imagesWithUrls,
+        };
 
+        return gigWithSellerAndLastFulfilmentAndImages;
     },
 });
 

@@ -8,29 +8,31 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 
 interface HeaderProps {
     category: string;
     subcategory: string;
+    editUrl: string;
+    ownerId: string;
 }
 
-export const Header = ({ category, subcategory }: HeaderProps) => {
+export const Header = ({ category, subcategory, editUrl, ownerId }: HeaderProps) => {
+    const currentUser = useQuery(api.users.getCurrentUser, {});
     return (
         <div
             className="
             flex 
-            py-8 
             w-full 
             h-fit 
             items-center 
-            justify-start 
             space-x-2
             sm:space-x-1
             md:space-x-3 
             text-sm 
             md:text-md
-            bg-red-100
             "
         >
             <Home className="w-4 h-4" />
@@ -38,6 +40,13 @@ export const Header = ({ category, subcategory }: HeaderProps) => {
             <Link href={`/${category}`}>{category}</Link>
             <p className="text-muted-foreground">/</p>
             <Link href={`/${category}/${subcategory}`}>{subcategory}</Link>
+            {(currentUser?._id === ownerId &&
+                <Button variant={"secondary"}>
+                    <Link href={editUrl}>
+                        Edit gig
+                    </Link>
+                </Button>
+            )}
         </div>
     )
 }

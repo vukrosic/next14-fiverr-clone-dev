@@ -33,16 +33,18 @@ export default defineSchema({
     languages: defineTable({
         language: v.string(),
         userId: v.id("users"),
-    }),
+    })
+        .index("by_userId", ["userId"]),
     userFlags: defineTable({
         userId: v.id("users"),
         markingType: v.string(),
         description: v.string(),
     }),
     countries: defineTable({
-        country: v.string(),
+        countryName: v.string(),
         userId: v.id("users"),
-    }),
+    })
+        .index("by_userId", ["userId"]),
     gigs: defineTable({
         title: v.string(),
         description: v.string(),
@@ -70,6 +72,7 @@ export default defineSchema({
         gigId: v.id("gigs"),
         buyerId: v.id("users"),
         fulfillmentStatus: v.string(),
+        fulfilmentTime: v.optional(v.number()),
     })
         .index("by_buyerId", ["buyerId"])
         .index("by_gigId", ["gigId"]),

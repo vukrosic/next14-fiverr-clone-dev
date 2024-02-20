@@ -43,7 +43,7 @@ export const Offers = ({
                 </TooltipProvider>
             </div>
             {/* Offers */}
-            <Tabs defaultValue={offers[0]._id} className="w-full sm:w-[400px] bg-red-500">
+            <Tabs defaultValue={offers[0]._id} className="w-full sm:w-[400px]">
                 <TabsList className="w-full">
                     {offers.map((offer) => {
                         return (
@@ -53,7 +53,7 @@ export const Offers = ({
                 </TabsList>
                 {offers.map((offer) => {
                     return (
-                        <TabsContent className="border" key={offer._id} value={offer._id}>
+                        <TabsContent key={offer._id} value={offer._id}>
                             <Content
                                 offer={offer}
                             />
