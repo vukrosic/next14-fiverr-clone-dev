@@ -58,12 +58,10 @@ export const Images = ({
                 })}
             </CarouselContent>
             <CarouselPrevious
-                className={`absolute top-1/2 left-2 transform -translate-y-1/2 transition-opacity duration-300 cursor-pointer ${isHovered ? 'opacity-45' : 'opacity-0'
-                    }`}
+                className='absolute top-1/2 left-2 transform -translate-y-1/2 transition-opacity duration-300 cursor-pointer opacity-45'
             />
             <CarouselNext
-                className={`absolute top-1/2 right-2 transform -translate-y-1/2 transition-opacity duration-300 cursor-pointer ${isHovered ? 'opacity-45' : 'opacity-0'
-                    }`}
+                className='absolute top-1/2 right-2 transform -translate-y-1/2 transition-opacity duration-300 cursor-pointer opacity-45'
             />
         </Carousel>
     )

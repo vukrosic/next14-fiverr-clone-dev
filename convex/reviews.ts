@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
+import { ExpressionOrValue } from "convex/server";
 
 export const getByGig = query({
     args: { gigId: v.id("gigs") },
@@ -28,6 +29,49 @@ export const getBySellerName = query({
             .query("reviews")
             .withIndex("by_sellerId", (q) => q.eq("sellerId", seller._id))
             .collect();
-        return reviews;
+
+        // if (!reviews) {
+        //     throw new Error("Reviews not found");
+        // }
+
+        // for each review, get the order
+        const reviewsFullType = await Promise.all(reviews.map(async (review) => {
+
+            const gig = await ctx.db.query("gigs")
+                .filter((q) => q.eq(q.field("_id"), review.gigId))
+                .unique();
+
+            if (!gig) {
+                throw new Error("Gig not found");
+            }
+
+            // get author country
+            const author = await ctx.db.query("users")
+                .filter((q) => q.eq(q.field("_id"), review.authorId))
+                .unique();
+
+            if (!author) {
+                throw new Error("Author not found");
+            }
+
+            const country = await ctx.db.query("countries")
+                .withIndex("by_userId", (q) => q.eq("userId", seller._id))
+                .unique();
+
+            if (!country) {
+                throw new Error("Country not found");
+            }
+
+            return {
+                ...review,
+                gig,
+                author: {
+                    ...author,
+                    country,
+                },
+            }
+        }));
+
+        return reviewsFullType;
     },
 });

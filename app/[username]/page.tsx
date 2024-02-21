@@ -4,6 +4,8 @@ import { useQuery } from "convex/react";
 import { ProfileCard } from "./_components/profile-card";
 import { api } from "@/convex/_generated/api";
 import { MyGigsList } from "./_components/my-gigs-list";
+import { ReviewsStats } from "./_components/reviews/reviews-stats";
+import { Reviews } from "./_components/reviews/reviews";
 
 interface SellerPageProps {
     params: {
@@ -37,7 +39,7 @@ const SellerPage = ({
         return <div>Not found</div>
     }
     return (
-        <div>
+        <div className="space-y-12">
             <div className="flex flex-col sm:flex-row w-full sm:justify-center p-0 sm:p-6 md:p-16 space-x-0 sm:space-x-3 lg:space-x-16">
                 <div className="w-full space-y-8 max-w-[700px]">
                     <ProfileCard
@@ -56,6 +58,12 @@ const SellerPage = ({
             </div>
             <MyGigsList
                 sellerUsername={params.username}
+            />
+            <ReviewsStats
+                reviews={reviews}
+            />
+            <Reviews
+                reviews={reviews}
             />
         </div>
     )

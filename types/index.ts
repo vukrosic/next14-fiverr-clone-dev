@@ -12,6 +12,11 @@ export type ImageWithUrlType = Doc<"gigMedia"> & {
     url: string
 };
 
-export type SellerWithCountryType = Doc<"users"> & {
+export type UserWithCountryType = Doc<"users"> & {
     country: Doc<"countries">
+};
+
+export type ReviewFullType = Doc<"reviews"> & {
+    author: UserWithCountryType,
+    gig: Doc<"gigs">
 };
