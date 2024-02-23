@@ -2,11 +2,13 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { Doc, Id } from "./_generated/dataModel";
+import { startCase } from 'lodash';
 
 export const get = query({
     args: {
         search: v.optional(v.string()),
         favorites: v.optional(v.string()),
+        filter: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -49,6 +51,19 @@ export const get = query({
                 .query("gigs")
                 .order("desc")
                 .collect();
+        }
+
+        // check if there is filter
+        if (args.filter !== undefined) {
+            const filter = args.filter as string;
+            // get subcategory by name
+            const subcategory = await ctx.db
+                .query("subcategories")
+                .withIndex("by_name", (q) => q.eq("name", filter))
+                .unique();
+
+            const filteredGigs = gigs.filter((gig) => gig.subcategoryId === subcategory?._id);
+            gigs = filteredGigs;
         }
 
         const gigsWithFavoriteRelation = gigs.map((gig) => {
