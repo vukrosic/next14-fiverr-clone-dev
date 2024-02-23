@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import * as React from "react"
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Loading } from "@/components/auth/loading";
 import { useQuery } from "convex/react";
-import { MessageCircle } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Doc } from "@/convex/_generated/dataModel";
 import { CategoriesFullType } from "@/types";
@@ -40,6 +40,8 @@ const Navbar = () => {
     } = useApiMutation(api.gig.create);
     const categories = useQuery(api.categories.get);
     const currentUser = useQuery(api.users.getCurrentUser);
+    const searchParams = useSearchParams();
+    const favorites = searchParams.get("favorites");
 
     const router = useRouter();
 
@@ -54,20 +56,7 @@ const Navbar = () => {
     const onClickInbox = () => {
         router.push("/inbox");
     }
-
-    const onClickCreate = () => {
-
-        createGig({
-            title: "Untitled",
-            description: "",
-            price: 0,
-        })
-            .then((id) => {
-                toast.success("Gig created");
-                router.push(`/gig/${id}/edit`);
-            })
-            .catch(() => toast.error("Failed to create gig"));
-    }
+    console.log(searchParams.get("favorites"));
     return (
         <>
             <Separator />
@@ -78,8 +67,24 @@ const Navbar = () => {
                 <Button onClick={onClickInbox} variant={"ghost"}>
                     <MessageCircle />
                 </Button>
+                <Button
+                    asChild
+                    variant={favorites ? "secondary" : "ghost"}
+                    size="lg"
+                    className="p-4"
+                >
+                    <Link
+                        href={{
+                            pathname: "/",
+                            query: favorites ? {} : { favorites: true }
+                        }}
+                        className="p-0"
+                    >
+                        <Heart className={favorites ? "fill-black" : ""} />
+                    </Link>
+                </Button>
                 {currentUser && (
-                    <Button onClick={() => router.push(`/seller/${currentUser.username}`)}>
+                    <Button onClick={() => router.push(`/seller/${currentUser.username}/manage-gigs`)}>
                         Switch To Selling
                     </Button>
                 )}

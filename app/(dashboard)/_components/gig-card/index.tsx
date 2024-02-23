@@ -57,10 +57,10 @@ export const GigCard = ({
     const toggleFavorite = () => {
         if (isFavorite) {
             unfavorite({ id })
-                .catch(() => toast.error("Failed to unfavorite"));
+            //.catch(() => toast.error("Failed to unfavorite"));
         } else {
             favorite({ id })
-                .catch(() => toast.error("Failed to favorite"));
+            //.catch(() => toast.error("Failed to favorite"));
         }
     }
 

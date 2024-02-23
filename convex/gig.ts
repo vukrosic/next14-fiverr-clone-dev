@@ -154,7 +154,7 @@ export const favorite = mutation({
             throw new Error("Board not found");
         }
 
-        const userId = identity.subject as Id<"users">;
+        const userId = gig.sellerId;
 
         const existingFavorite = await ctx.db
             .query("userFavorites")
@@ -194,7 +194,7 @@ export const unfavorite = mutation({
             throw new Error("Board not found");
         }
 
-        const userId = identity.subject as Id<"users">;
+        const userId = gig.sellerId;
 
         const existingFavorite = await ctx.db
             .query("userFavorites")

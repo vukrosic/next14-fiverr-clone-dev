@@ -59,7 +59,7 @@ export const SellerNavbar = () => {
                         <MessageCircle className="p-0" />
                     </Button>
                     {currentUser && (
-                        <Button variant={"ghost"} className="text-muted-foreground" onClick={() => router.push(`/seller/${currentUser.username}`)}>
+                        <Button variant={"ghost"} className="text-muted-foreground" onClick={() => router.push(`/`)}>
                             Switch To Buying
                         </Button>
                     )}
