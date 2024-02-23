@@ -15,7 +15,7 @@ import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useQuery } from "convex/react";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 
 interface GigCardProps {
     id: string;
@@ -24,6 +24,9 @@ interface GigCardProps {
     description: string;
     createdAt: number;
     isFavorite: boolean;
+    storageId?: Id<"_storage">;
+    offer: Doc<"offers">;
+    reviews: Doc<"reviews">[];
 };
 
 export const GigCard = ({
@@ -32,7 +35,10 @@ export const GigCard = ({
     title,
     description,
     createdAt,
-    isFavorite
+    isFavorite,
+    storageId,
+    offer,
+    reviews,
 }: GigCardProps) => {
     const { userId } = useAuth();
     const seller = useQuery(api.gig.getSeller, { id: sellerId as Id<"users"> });
@@ -66,12 +72,13 @@ export const GigCard = ({
 
     return (
         <Link href={`/${seller?.username}/${id}`}>
-            <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden">
+            {/* <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden"> */}
+            <div className="group border rounded-lg flex flex-col justify-between overflow-hidden">
                 <div className="relative flex-1 bg-blue-50">
-                    {/* <ConvexImage
+                    <ConvexImage
                         storageId={storageId}
                         title={title}
-                    /> */}
+                    />
                     <Overlay />
                     <Actions
                         id={id}
@@ -94,6 +101,9 @@ export const GigCard = ({
                     createdAtLabel={createdAtLabel}
                     onClick={toggleFavorite}
                     disabled={favoritePending || unfavoritePending}
+                    offer={offer}
+                    reviews={reviews}
+                    seller={seller}
                 />
             </div>
         </Link>

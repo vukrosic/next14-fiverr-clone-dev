@@ -38,7 +38,10 @@ export const Reviews = ({ reviews }: ReviewsProps) => {
             {reviews.map((review) => {
                 return (
                     <>
-                        <ReviewBox key={review._id} review={review} />
+                        <ReviewBox
+                            key={review._id}
+                            review={review}
+                        />
                         <Separator />
                     </>
                 );

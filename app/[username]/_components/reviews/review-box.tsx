@@ -4,6 +4,10 @@ import { Doc } from "@/convex/_generated/dataModel";
 import { ReviewFullType } from "@/types";
 import { formatDistanceToNow } from 'date-fns'; // Importing formatDistanceToNow function
 import { Star } from 'lucide-react'; // Importing Star component from Lucide
+import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ReviewBoxProps {
     review: ReviewFullType;
@@ -36,6 +40,26 @@ export const ReviewBox = ({ review }: ReviewBoxProps) => {
                     <p>{distanceToNow}</p>
                 </div>
                 <p>{review.comment}</p>
+            </div>
+            <Separator orientation='vertical' />
+            <div className='w-[600px]'>
+                <p className='text-muted-foreground'>Ordered:</p>
+                <div className='flex space-x-4 items-center'>
+                    <div className='w-[300px]'>
+                        <AspectRatio ratio={16 / 9}>
+                            <Image
+                                src={review.image.url}
+                                fill
+                                alt={review.gig.title}
+                                className="rounded-md object-cover"
+                            />
+                        </AspectRatio>
+                    </div>
+                    <div className='flex flex-col space-y-3 justify-evenly'>
+                        <p className='font-normal'>{review.gig.title}</p>
+                        <p className=''>From ${review.offers[0].price}</p>
+                    </div>
+                </div>
             </div>
         </div>
     );

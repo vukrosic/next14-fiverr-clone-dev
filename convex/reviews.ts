@@ -45,6 +45,30 @@ export const getBySellerName = query({
                 throw new Error("Gig not found");
             }
 
+            const image = await ctx.db.query("gigMedia")
+                .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+                .first();
+
+            if (!image) {
+                throw new Error("Image not found");
+            }
+
+            const imageUrl = await ctx.storage.getUrl(image.storageId);
+
+            if (!imageUrl) {
+                throw new Error("Image not found");
+            }
+
+            const offers = await ctx.db.query("offers")
+                .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+                .collect();
+
+            if (!offers) {
+                throw new Error("Offers not found");
+            }
+
+            const imageWithUrl = { ...image, url: imageUrl };
+
             // get author country
             const author = await ctx.db.query("users")
                 .filter((q) => q.eq(q.field("_id"), review.authorId))
@@ -65,6 +89,8 @@ export const getBySellerName = query({
             return {
                 ...review,
                 gig,
+                image: imageWithUrl,
+                offers,
                 author: {
                     ...author,
                     country,

@@ -1,4 +1,4 @@
-import { Doc } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 
 export type MessageWithUserType = Doc<"messages"> & {
     user: Doc<"users">
@@ -17,6 +17,20 @@ export type UserWithCountryType = Doc<"users"> & {
 };
 
 export type ReviewFullType = Doc<"reviews"> & {
-    author: UserWithCountryType,
+    author: UserWithCountryType
+    image: ImageWithUrlType
+    offers: Doc<"offers">[]
     gig: Doc<"gigs">
 };
+
+export type CategoriesFullType = Doc<"categories"> & {
+    subcategories: Doc<"subcategories">[]
+};
+
+export type FullGigType = Doc<"gigs"> & {
+    storageId?: Id<"_storage"> | undefined;
+    favorited: boolean;
+    offer: Doc<"offers">;
+    reviews: Doc<"reviews">[];
+    seller: Doc<"users">;
+}

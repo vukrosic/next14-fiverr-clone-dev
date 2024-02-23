@@ -2,14 +2,23 @@
 
 import { api } from "@/convex/_generated/api";
 import { useApiMutation } from "@/hooks/use-api-mutation";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 
-const SubcategoryPage = () => {
-    // const resposne = useMutation(api.categoriesScript.create);
-    // resposne({});
+interface SubcategoryPageProps {
+    params: {
+        categoryName: string;
+        subcategoryName: string;
+    };
+}
+
+const SubcategoryPage = ({
+    params
+}: SubcategoryPageProps) => {
+    const gigs = useQuery(api.gigs.getBySubcategory, { subcategory: params.subcategoryName });
+
     return (
         <div>Subcategory page</div>
     );
-};
+}
 
 export default SubcategoryPage;

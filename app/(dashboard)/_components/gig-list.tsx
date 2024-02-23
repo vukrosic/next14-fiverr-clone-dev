@@ -6,6 +6,8 @@ import { EmptySearch } from "./empty-search";
 import { EmptyFavorites } from "./empty-favorites";
 import { GigCard } from "./gig-card";
 import { Loading } from "@/components/auth/loading";
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { FullGigType } from "@/types";
 
 interface GigListProps {
     query: {
@@ -17,7 +19,7 @@ interface GigListProps {
 export const GigList = ({
     query,
 }: GigListProps) => {
-    const gigs = useQuery(api.gigs.get, { ...query });
+    const gigs: FullGigType[] | undefined = useQuery(api.gigs.get, { ...query });
 
     if (gigs === undefined) {
         return (
@@ -54,6 +56,9 @@ export const GigList = ({
                         description={gig.description}
                         createdAt={gig._creationTime}
                         isFavorite={gig.favorited}
+                        storageId={gig.storageId}
+                        offer={gig.offer}
+                        reviews={gig.reviews}
                     />
                 ))
                 }

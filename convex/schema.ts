@@ -55,6 +55,7 @@ export default defineSchema({
         clicks: v.number(),
     })
         .index("by_sellerId", ["sellerId"])
+        .index("by_subcategoryId", ["subcategoryId"])
         .searchIndex("search_title", {
             searchField: "title",
         }),
@@ -91,7 +92,8 @@ export default defineSchema({
         categoryId: v.id("categories"),
         name: v.string(),
     })
-        .index("by_category", ["categoryId"]),
+        .index("by_category", ["categoryId"])
+        .index("by_name", ["name"]),
     searchTags: defineTable({
         gigIds: v.array(v.string()),
     }),

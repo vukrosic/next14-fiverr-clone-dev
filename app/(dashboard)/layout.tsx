@@ -10,7 +10,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <main className="h-full">
             <Sidebar />
             <div className="lg:pl-[300px] h-full">
-                {/* <Navbar /> */}
+                <Navbar />
                 {children}
             </div>
         </main>
