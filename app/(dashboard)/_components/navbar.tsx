@@ -12,33 +12,18 @@ import { useEffect, useState } from "react";
 import * as React from "react"
 import Link from "next/link"
 
-import { cn } from "@/lib/utils"
-import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
 import {
     Dialog,
+    DialogClose,
     DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Loading } from "@/components/auth/loading";
 import { useQuery } from "convex/react";
-import { Heart, MessageCircle } from "lucide-react";
+import { Filter, Heart, MessageCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Doc } from "@/convex/_generated/dataModel";
-import { CategoriesFullType } from "@/types";
-import { kebabCase } from 'lodash';
-import queryString from "query-string";
 import { ListItem } from "./list-item";
+import { TooltipProvider } from "./tooltip-provider";
 
 
 const Navbar = () => {
@@ -69,37 +54,73 @@ const Navbar = () => {
                 <div className="hidden lg:flex lg:flex-1">
                     <SearchInput />
                 </div>
-
-                <Button
-                    onClick={clearFilters}
-                    variant="ghost"
-                    disabled={!filter}
-                    className="mr-12"
-                >
-                    Clear filters
-                </Button>
+                <Dialog>
+                    <DialogTrigger>
+                        <TooltipProvider
+                            text="Filter"
+                        >
+                            <Filter className="mx-4 my-3" />
+                        </TooltipProvider>
+                    </DialogTrigger>
+                    <DialogContent className="overflow-y-auto max-h-[calc(100vh-200px)]">
+                        {/* <ScrollArea className="rounded-md border"> */}
+                        <DialogClose>
+                            <>
+                                <Button
+                                    onClick={clearFilters}
+                                    variant="ghost"
+                                    className="text-red-500"
+                                    disabled={!filter}
+                                >
+                                    Clear filters
+                                </Button>
+                                {categories.map((category, index) => (
+                                    <div key={index} className="p-4 bg-white rounded-lg shadow-md">
+                                        <h3 className="text-lg font-semibold mb-4">{category.name}</h3>
+                                        <div className="space-y-2">
+                                            {category.subcategories.map((subcategory, subIndex) => (
+                                                <ListItem
+                                                    key={subIndex}
+                                                    title={subcategory.name}
+                                                    subcategory={subcategory}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </>
+                        </DialogClose>
+                    </DialogContent>
+                    {/* </ScrollArea> */}
+                </Dialog>
 
                 {currentUser && (
                     <>
-                        <Button onClick={onClickInbox} variant={"ghost"}>
-                            <MessageCircle />
-                        </Button>
-                        <Button
-                            asChild
-                            variant={favorites ? "secondary" : "ghost"}
-                            size="lg"
-                            className="p-4"
-                        >
-                            <Link
-                                href={{
-                                    pathname: "/",
-                                    query: favorites ? {} : { favorites: true }
-                                }}
-                                className="p-0"
+                        <TooltipProvider text="Favorites">
+                            <Button
+                                asChild
+                                variant={favorites ? "secondary" : "ghost"}
+                                size="lg"
+                                className="p-4"
                             >
-                                <Heart className={favorites ? "fill-black" : ""} />
-                            </Link>
-                        </Button>
+                                <Link
+                                    href={{
+                                        pathname: "/",
+                                        query: favorites ? {} : { favorites: true }
+                                    }}
+                                    className="p-0"
+                                >
+                                    <Heart className={favorites ? "fill-black" : ""} />
+                                </Link>
+                            </Button>
+                        </TooltipProvider>
+
+                        <TooltipProvider text="Inbox" >
+                            <Button onClick={onClickInbox} variant={"ghost"}>
+                                <MessageCircle />
+                            </Button>
+                        </TooltipProvider>
+
                         <Button onClick={() => router.push(`/seller/${currentUser.username}/manage-gigs`)}>
                             Switch To Selling
                         </Button>
@@ -117,59 +138,7 @@ const Navbar = () => {
 
                     </>
                 )}
-                <Dialog>
-                    <DialogTrigger>Filter</DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Filter gigs by category</DialogTitle>
-                        </DialogHeader>
-                        {/* Mapping through categories */}
-                        {categories.map((category, index) => (
-                            <div key={index}>
-                                {/* Displaying category name */}
-                                <h3>{category.name}</h3>
-
-                                {/* Mapping through subcategories */}
-                                {category.subcategories.map((subcategory, subIndex) => (
-                                    // <ListItem
-                                    //     className="w-fit"
-                                    //     key={subcategory.name}
-                                    //     title={subcategory.name}
-                                    //     subcategory={subcategory}
-                                    // />
-                                    <p key={subIndex}>
-                                        {subcategory.name}
-                                    </p>
-                                ))}
-                            </div>
-                        ))}
-                    </DialogContent>
-                </Dialog>
-
-            </div>
-            <NavigationMenu>
-                <NavigationMenuList className="flex space-x-6 justify-center ml-3 mx-2 px-4 m-auto flex-wrap">
-                    {categories.map((category: CategoriesFullType) => {
-                        return (
-                            <NavigationMenuItem key={category.name} className="w-fit">
-                                <NavigationMenuTrigger className="p-0 w-fit">{category.name}</NavigationMenuTrigger>
-                                <NavigationMenuContent>
-                                    <ul className="grid 2xl:w-[1200px] sm:w-[600px] w-[300px] 2xl:grid-cols-5 sm:grid-cols-2 grid-cols-1 gap-3 p-4">
-                                        {category.subcategories.map((subcategory) => (
-                                            <ListItem
-                                                className="w-fit"
-                                                key={subcategory.name}
-                                                title={subcategory.name}
-                                                subcategory={subcategory}
-                                            />
-                                        ))}
-                                    </ul>
-                                </NavigationMenuContent>
-                            </NavigationMenuItem>
-                        );
-                    })}
-                </NavigationMenuList>
-            </NavigationMenu>
+            </div >
             <Separator />
         </>
     );
