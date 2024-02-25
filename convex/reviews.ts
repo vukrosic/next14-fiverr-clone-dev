@@ -9,7 +9,7 @@ export const getByGig = query({
             .query("reviews")
             .withIndex("by_gigId", (q) => q.eq("gigId", args.gigId))
             .collect();
-        return reviews;
+        return reviews; // i think it doesn't matter than I expose sellerIds like this, ask about it
     },
 });
 

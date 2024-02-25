@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/tooltip"
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
+import queryString from "query-string";
 
 
 interface HeaderProps {
@@ -21,6 +23,17 @@ interface HeaderProps {
 
 export const Header = ({ category, subcategory, editUrl, ownerId }: HeaderProps) => {
     const currentUser = useQuery(api.users.getCurrentUser, {});
+    const router = useRouter();
+
+    const handleSubcategoryClick = () => {
+        const url = queryString.stringifyUrl({
+            url: "/",
+            query: {
+                filter: subcategory,
+            },
+        }, { skipEmptyString: true, skipNull: true });
+        router.push(url);
+    };
     return (
         <div
             className="
@@ -35,11 +48,13 @@ export const Header = ({ category, subcategory, editUrl, ownerId }: HeaderProps)
             md:text-md
             "
         >
-            <Home className="w-4 h-4" />
+            <Link href="/">
+                <Home className="w-4 h-4" />
+            </Link>
             <p className="text-muted-foreground">/</p>
-            <Link href={`/${category}`}>{category}</Link>
+            <p className="cursor-default">{category}</p>
             <p className="text-muted-foreground">/</p>
-            <Link href={`/${category}/${subcategory}`}>{subcategory}</Link>
+            <div className="font-medium" onClick={handleSubcategoryClick}>{subcategory}</div>
             {(currentUser?._id === ownerId &&
                 <Button variant={"secondary"}>
                     <Link href={editUrl}>

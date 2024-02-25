@@ -29,14 +29,14 @@ const GigPage = ({
     //const seller = useQuery(api.users.getUserByUsername, { username: params.username });
     const categoryAndSubcategory = useQuery(api.gig.getCategoryAndSubcategory, { gigId: params.gigId as Id<"gigs"> });
     const offers = useQuery(api.offers.get, { gigId: params.gigId as Id<"gigs"> });
-    const orders = useQuery(api.orders.getByGig, { gigId: params.gigId as Id<"gigs"> });
+    const ordersNumber = useQuery(api.orders.getOrderNumberByGig, { gigId: params.gigId as Id<"gigs"> });
     const reviews = useQuery(api.reviews.getByGig, { gigId: params.gigId as Id<"gigs"> });
 
-    if (gig === undefined || reviews === undefined || orders === undefined || categoryAndSubcategory === undefined || offers == undefined) {
+    if (gig === undefined || reviews === undefined || ordersNumber === undefined || categoryAndSubcategory === undefined || offers == undefined) {
         return <div>Loading...</div>
     }
 
-    if (gig === null || orders === null || categoryAndSubcategory === null || offers === null) {
+    if (gig === null || categoryAndSubcategory === null || offers === null) {
         return <div>Not found</div>
     }
 
@@ -54,7 +54,7 @@ const GigPage = ({
                     <h1 className="text-3xl font-bold break-words text-[#3F3F3F]">{gig.title}</h1>
                     <Seller
                         seller={gig.seller}
-                        orders={orders}
+                        ordersNumber={ordersNumber}
                         reviews={reviews}
                     />
                     <Images
@@ -79,7 +79,7 @@ const GigPage = ({
                     <SellerDetails
                         seller={gig.seller}
                         reviews={reviews}
-                        orders={orders}
+                        ordersNumber={ordersNumber}
                         lastFulFilmentTime={gig.lastFulfilment?.fulfilmentTime}
                         languages={gig.seller.languages}
                     />

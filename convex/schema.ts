@@ -57,6 +57,7 @@ export default defineSchema({
     })
         .index("by_sellerId", ["sellerId"])
         .index("by_subcategoryId", ["subcategoryId"])
+        .index("by_published", ["published"])
         .searchIndex("search_title", {
             searchField: "title",
         }),

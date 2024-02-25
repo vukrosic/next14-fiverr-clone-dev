@@ -21,6 +21,20 @@ export const getByGig = query({
     },
 });
 
+export const getOrderNumberByGig = query({
+    args: {
+        gigId: v.id("gigs"),
+    },
+    handler: async (ctx, args) => {
+        const orders = await ctx.db
+            .query("orders")
+            .withIndex("by_gigId", (q) => q.eq("gigId", args.gigId))
+            .collect();
+
+        return orders.length;
+    },
+});
+
 // export const getByUser = query({
 //     args: {
 //         userId: v.id("users"),

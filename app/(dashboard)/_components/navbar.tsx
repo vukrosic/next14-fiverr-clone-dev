@@ -22,6 +22,14 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Loading } from "@/components/auth/loading";
 import { useQuery } from "convex/react";
 import { Heart, MessageCircle } from "lucide-react";
@@ -38,6 +46,7 @@ const Navbar = () => {
     const currentUser = useQuery(api.users.getCurrentUser);
     const searchParams = useSearchParams();
     const favorites = searchParams.get("favorites");
+    const filter = searchParams.get("filter");
 
     const router = useRouter();
 
@@ -49,13 +58,27 @@ const Navbar = () => {
         router.push("/inbox");
     }
 
+    const clearFilters = () => {
+        router.push("/");
+    }
+
     return (
         <>
             <Separator />
             <div className="flex items-center gap-x-4 p-5">
-                <div className="hidden mr-12 lg:flex lg:flex-1">
+                <div className="hidden lg:flex lg:flex-1">
                     <SearchInput />
                 </div>
+
+                <Button
+                    onClick={clearFilters}
+                    variant="ghost"
+                    disabled={!filter}
+                    className="mr-12"
+                >
+                    Clear filters
+                </Button>
+
                 {currentUser && (
                     <>
                         <Button onClick={onClickInbox} variant={"ghost"}>
@@ -94,6 +117,35 @@ const Navbar = () => {
 
                     </>
                 )}
+                <Dialog>
+                    <DialogTrigger>Filter</DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Filter gigs by category</DialogTitle>
+                        </DialogHeader>
+                        {/* Mapping through categories */}
+                        {categories.map((category, index) => (
+                            <div key={index}>
+                                {/* Displaying category name */}
+                                <h3>{category.name}</h3>
+
+                                {/* Mapping through subcategories */}
+                                {category.subcategories.map((subcategory, subIndex) => (
+                                    // <ListItem
+                                    //     className="w-fit"
+                                    //     key={subcategory.name}
+                                    //     title={subcategory.name}
+                                    //     subcategory={subcategory}
+                                    // />
+                                    <p key={subIndex}>
+                                        {subcategory.name}
+                                    </p>
+                                ))}
+                            </div>
+                        ))}
+                    </DialogContent>
+                </Dialog>
+
             </div>
             <NavigationMenu>
                 <NavigationMenuList className="flex space-x-6 justify-center ml-3 mx-2 px-4 m-auto flex-wrap">
@@ -109,8 +161,6 @@ const Navbar = () => {
                                                 key={subcategory.name}
                                                 title={subcategory.name}
                                                 subcategory={subcategory}
-
-                                            //href={`/categories/${kebabCase(category.name)}/${kebabCase(subcategory.name)}`}
                                             />
                                         ))}
                                     </ul>

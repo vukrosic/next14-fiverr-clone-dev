@@ -15,15 +15,15 @@ import { toast } from "sonner"
 import { api } from "@/convex/_generated/api"
 import { useQuery } from "convex/react"
 import { useState } from "react"
-import { Doc } from "@/convex/_generated/dataModel"
+import { Doc, Id } from "@/convex/_generated/dataModel"
 import { useApiMutation } from "@/hooks/use-api-mutation"
 
 
 const CreateFormSchema = z.object({
   title: z
     .string()
-    .min(30, {
-      message: "Title must be at least 30 characters.",
+    .min(20, {
+      message: "Title must be at least 20 characters.",
     })
     .max(100, {
       message: "Title must not be longer than 100 characters.",
@@ -72,10 +72,10 @@ export function CreateForm() {
       title: data.title,
       description: "",
       subcategoryId: data.subcategoryId,
-      published: false,
     })
-      .then(() => {
-        toast.info("Gig created successfully")
+      .then((gigId: Id<"gigs">) => {
+        toast.info("Gig created successfully");
+        form.setValue("title", "");
       })
       .catch(() => {
         toast.error("Failed to create gig")

@@ -1,4 +1,5 @@
-import { CreateForm } from "../edit/[gig-name]/create-form";
+import { CreateForm } from "../edit/[gigId]/create-form";
+
 
 const CreateGig = () => {
     return (

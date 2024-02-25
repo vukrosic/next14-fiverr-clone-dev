@@ -2,16 +2,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Doc } from "@/convex/_generated/dataModel";
-import { SellerWithCountryType } from "@/types";
+import { UserWithCountryType } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { Star } from "lucide-react"
 
 const { format } = require('date-fns');
 
 interface SellerProps {
-    seller: SellerWithCountryType;
+    seller: UserWithCountryType;
     reviews: Doc<"reviews">[];
-    orders: Doc<"orders">[];
+    ordersNumber: number;
     lastFulFilmentTime: number | undefined;
     languages: Doc<"languages">[];
 }
@@ -19,11 +19,11 @@ interface SellerProps {
 export const SellerDetails = ({
     seller,
     reviews,
-    orders,
+    ordersNumber,
     lastFulFilmentTime,
     languages
 }: SellerProps) => {
-    const orderLabel = orders.length === 1 ? orders.length + " Order in Queue" : orders.length + " Orders in Queue";
+    const orderLabel = ordersNumber === 1 ? ordersNumber + " Order in Queue" : ordersNumber + " Orders in Queue";
 
     const averageReview = reviews.reduce((acc, review) => {
         return acc + review.communication_level + review.recommend_to_a_friend + review.service_as_described;

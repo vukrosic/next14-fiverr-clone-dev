@@ -69,7 +69,7 @@ export const GigCard = ({
             <GigCard.Skeleton />
         )
     }
-
+    console.log(isFavorite);
     return (
         <Link href={`/${seller?.username}/${id}`}>
             {/* <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden"> */}

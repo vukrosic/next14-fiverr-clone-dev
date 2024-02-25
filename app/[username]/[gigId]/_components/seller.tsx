@@ -5,15 +5,15 @@ import { Star } from "lucide-react"
 interface SellerProps {
     seller: Doc<"users">;
     reviews: Doc<"reviews">[];
-    orders: Doc<"orders">[];
+    ordersNumber: number;
 }
 
 export const Seller = ({
     seller,
     reviews,
-    orders
+    ordersNumber
 }: SellerProps) => {
-    const orderLabel = orders.length === 1 ? orders.length + " Order in Queue" : orders.length + " Orders in Queue";
+    const orderLabel = ordersNumber === 1 ? ordersNumber + " Order in Queue" : ordersNumber + " Orders in Queue";
 
     const averageReview = reviews.reduce((acc, review) => {
         return acc + review.communication_level + review.recommend_to_a_friend + review.service_as_described;

@@ -19,23 +19,6 @@ export const get = query({
 
         // return gigs for authenticaned or non-authenticated users, but favorites only for authenticated users
 
-        if (identity && args.favorites) {
-            const favorites = await ctx.db
-                .query("userFavorites")
-                .withIndex("by_user", (q) => q.eq("userId", identity.subject as Id<"users">))
-                .order("desc")
-                .collect();
-
-            const favGigIds = favorites.map((fav) => fav.gigId);
-
-            const gigs = await getAllOrThrow(ctx.db, favGigIds)
-
-            return gigs.map((gig) => ({
-                ...gig,
-                favorited: true,
-            }));
-        }
-
         const title = args.search as string;
 
         let gigs = [];
@@ -51,6 +34,7 @@ export const get = query({
         } else {
             gigs = await ctx.db
                 .query("gigs")
+                .withIndex("by_published", (q) => q.eq("published", true))
                 .order("desc")
                 .collect();
         }
@@ -76,11 +60,12 @@ export const get = query({
                     .query("userFavorites")
                     .withIndex("by_user_gig", (q) =>
                         q
-                            .eq("userId", identity.subject as Id<"users">)
+                            .eq("userId", gig.sellerId)
                             .eq("gigId", gig._id)
                     )
                     .unique()
                     .then((favorite) => {
+                        console.log("favorite: ", favorite);
                         return {
                             ...gig,
                             favorited: !!favorite,
