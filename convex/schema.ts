@@ -73,6 +73,7 @@ export default defineSchema({
         price: v.number(),
         delivery_days: v.number(),
         revisions: v.number(),
+        stripePriceId: v.string(),
     })
         .index("by_gigId", ["gigId"])
         .index("by_tier", ["tier"])

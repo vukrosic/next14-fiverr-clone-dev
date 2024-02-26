@@ -1,7 +1,7 @@
 "use node";
 
 import { v } from "convex/values";
-import { action, httpAction, internalAction } from "./_generated/server";
+import { action, httpAction, internalAction, internalMutation, internalQuery } from "./_generated/server";
 import Stripe from "stripe";
 import { internal } from "./_generated/api";
 import { httpRouter } from "convex/server";
@@ -24,32 +24,55 @@ export const onboard = action({
     },
 });
 
+// const getOffers = internalQuery({
+//     args: { gigId: v.id("gigs") },
+//     handler: async (ctx, args) => {
+//         const offers = await ctx.db.query("offers")
+//         .withIndex("by_gigId_tier", (q) =>
+//             q
+//                 .eq("gigId", args.gigId)
+//         ).all();
+//         return offers;
+//     },
+// });
+
 export const pay = action({
-    args: { text: v.string() },
-    handler: async ({ runMutation }, { text }) => {
+    args: { price: v.number(), title: v.string() },
+    handler: async (ctx, args) => {
+
         const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {
             apiVersion: "2023-10-16",
         });
-
+        const domain = process.env.NEXT_PUBLIC_HOSTING_URL;
         const session = await stripe.checkout.sessions.create(
             {
                 mode: 'payment',
                 line_items: [
                     {
-                        price: '{{PRICE_ID}}',
+                        price_data: {
+                            currency: "USD",
+                            unit_amount: args.price * 100,
+                            tax_behavior: "exclusive",
+                            product_data: {
+                                name: args.title,
+                            },
+                        },
                         quantity: 1,
                     },
                 ],
                 payment_intent_data: {
-                    application_fee_amount: 123,
+                    application_fee_amount: args.price * 0.05,
                 },
-                success_url: 'https://example.com/success',
-                cancel_url: 'https://example.com/cancel',
-            },
-            {
-                stripeAccount: '{{CONNECTED_ACCOUNT_ID}}',
+                success_url: `${domain}`,
+                cancel_url: `${domain}`,
             }
         );
+
+        // await runMutation(internal.payments.markPending, {
+        //     paymentId,
+        //     stripeId: user_stripe_session.id,
+        // });
+        // return user_stripe_session.url;
 
 
         // const domain = process.env.NEXT_PUBLIC_HOSTING_URL;
@@ -148,3 +171,43 @@ export const pay = action({
 //         }
 //     },
 // });
+
+
+export const addPrice = internalAction({
+    args: {
+        tier: v.union(v.literal("Basic"), v.literal("Standard"), v.literal("Premium")),
+        price: v.number(),
+        title: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {
+            apiVersion: "2023-10-16",
+        });
+
+        const price = await stripe.prices.create({
+            currency: 'usd',
+            unit_amount: args.price * 100,
+            product_data: {
+                name: "[" + args.tier + "] " + args.title,
+            },
+        });
+
+        return price;
+    },
+});
+
+export const updatePrice = internalMutation({
+    args: {
+        priceId: v.string(),
+        newPrice: v.number(),
+    },
+    handler: async (ctx, args) => {
+        const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {
+            apiVersion: "2023-10-16",
+        });
+
+        const price = await stripe.prices.update(args.priceId, {
+
+        });
+    },
+});

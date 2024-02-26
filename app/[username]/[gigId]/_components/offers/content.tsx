@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button"
+import { api } from "@/convex/_generated/api"
 import { Doc } from "@/convex/_generated/dataModel"
+import { useAction } from "convex/react"
 import { Clock, RefreshCcw } from "lucide-react"
 
 interface OffersProps {
@@ -9,6 +11,11 @@ interface OffersProps {
 export const Content = ({
     offer
 }: OffersProps) => {
+    const orderNow = useAction(api.stripe.pay)
+    const handleOrderNow = () => {
+        console.log("Order Now");
+        orderNow({ priceId: offer.stripePriceId });
+    }
     const revisionText = offer.revisions === 1 ? "Revision" : "Revisions";
     return (
         <div className="space-y-4">
@@ -27,7 +34,7 @@ export const Content = ({
                     <p>{offer.revisions} {revisionText}</p>
                 </div>
             </div>
-            <Button className="w-full">Order Now</Button>
+            <Button className="w-full" onClick={handleOrderNow}>Order Now</Button>
             <Button className="w-full" variant={"ghost"}>Send Message</Button>
         </div>
     )

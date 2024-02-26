@@ -111,7 +111,14 @@ export const createStripe = action({
             email: identity.email
         });
 
-        return account.id;
+        const accountLink = await stripe.accountLinks.create({
+            account: account.id,
+            refresh_url: 'http://localhost:3000/sign-up',
+            return_url: 'http://localhost:3000/',
+            type: 'account_onboarding',
+        });
+
+        return accountLink;
     },
 });
 

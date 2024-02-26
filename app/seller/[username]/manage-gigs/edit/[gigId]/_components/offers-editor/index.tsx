@@ -17,10 +17,6 @@ export const OffersEditor = ({
     gigId
 }: OffersEditorProps) => {
     const offers = useQuery(api.offers.get, { gigId });
-    const {
-        mutate,
-        pending,
-    } = useApiMutation(api.offers.upsert);
 
     if (offers === undefined) return <div>Loading offers...</div>;
 
