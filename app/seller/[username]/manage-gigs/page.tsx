@@ -17,13 +17,17 @@ const ManageGigs = () => {
     const gigs = useQuery(api.gigs.getGigsWithOrderAmountAndRevenue);
 
     if (gigs === undefined || currentUser === undefined) {
-        return <Loading />;
+        return <Loading />
+    }
+
+    if (gigs === null || currentUser === null) {
+        return <div>Not found</div>
     }
 
     const data: GigData[] = gigs.map(gig => ({
         id: gig._id,
         title: gig.title,
-        image: "https://via.placeholder.com/150",
+        image: gig.ImageUrl || "https://images.unsplash.com/photo-1559311648-d46f5d8593d6?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         clicks: gig.clicks,
         orders: gig.orderAmount,
         revenue: gig.totalRevenue,
@@ -45,7 +49,6 @@ const ManageGigs = () => {
             </div>
             <Separator className="my-6" />
             <DataTable columns={columns} data={data} />
-            {/* <GigList /> */}
         </>
     )
 }

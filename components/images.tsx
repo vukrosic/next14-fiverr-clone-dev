@@ -19,18 +19,20 @@ interface ImagesProps {
     images: ImageWithUrlType[];
     title: string;
     allowDelete: boolean;
+    className?: string;
 }
 
 export const Images = ({
     images,
     title,
-    allowDelete
+    allowDelete,
+    className
 }: ImagesProps) => {
     const [isHovered, setIsHovered] = useState(false);
     return (
         <Carousel className="select-none" onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
-            <CarouselContent>
+            <CarouselContent className={className || ""}>
                 {images.map((image) => {
                     return (
                         <CarouselItem

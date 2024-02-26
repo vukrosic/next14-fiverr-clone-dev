@@ -171,9 +171,30 @@ export const getGigsWithOrderAmountAndRevenue = query({
             })
         );
 
+        // get images
+        const gigsFull = await Promise.all(gigsWithOrderAmountAndRevenue.map(async (gig) => {
+            const image = await ctx.db
+                .query("gigMedia")
+                .withIndex("by_gigId", (q) => q.eq("gigId", gig._id))
+                .first();
+
+            if (image) {
+                const url = await ctx.storage.getUrl(image.storageId);
+                return {
+                    ...gig,
+                    ImageUrl: url
+                };
+            }
+            return {
+                ...gig,
+                ImageUrl: null
+            };
+        }));
 
 
-        return gigsWithOrderAmountAndRevenue
+
+
+        return gigsFull
     },
 });
 

@@ -40,6 +40,10 @@ const GigPage = ({
         return <div>Not found</div>
     }
 
+    if (gig.published === false) {
+        return <div>This gig is not published</div>
+    }
+
     const editUrl = `/seller/${gig.seller.username}/manage-gigs/edit/${gig._id}`
 
     return (
@@ -82,9 +86,6 @@ const GigPage = ({
                         ordersNumber={ordersNumber}
                         lastFulFilmentTime={gig.lastFulfilment?.fulfilmentTime}
                         languages={gig.seller.languages}
-                    />
-                    <Portfolio
-
                     />
                 </div>
                 <Offers

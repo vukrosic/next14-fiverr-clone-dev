@@ -43,10 +43,14 @@ export const Footer = ({
       <p className="text-[14px] font-medium max-w-[calc(100%-20px)]">
         {title}
       </p>
-      <div className="flex gap-x-2 text-md font-semibold">
-        <Star />
-        {averageReview.toFixed(1)}
-        <p className="font-normal">{totalReviews > 0 && `(${totalReviews})`}</p>
+      <div className="flex gap-x-1.5 text-md font-normal">
+        <Star className="font-semibold" />
+        <p className="font-semibold">{reviews.length}</p>
+        (<p className="underline">{averageReview || 0}</p>)
+        {/* {reviews.length > 0 && averageReview.toFixed(1) && (
+          <p className="font-normal">{totalReviews > 0 && `(${totalReviews || 0})`}</p>
+        )}
+        {reviews.length === 0 && (<p className="font-normal">0</p>)} */}
       </div>
       <p className="font-semibold">From ${offer.price}</p>
       <p className="opacity-0 group-hover:opacity-100 transition-opacity text-[11px] text-muted-foreground truncate">

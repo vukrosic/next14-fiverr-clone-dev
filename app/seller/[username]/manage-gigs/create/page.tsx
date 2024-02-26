@@ -1,10 +1,19 @@
-import { CreateForm } from "../edit/[gigId]/create-form";
+import { CreateForm } from "./_components/create-form";
 
+interface CreateGigProps {
+    params: {
+        username: string;
+    }
+}
 
-const CreateGig = () => {
+const CreateGig = ({
+    params
+}: CreateGigProps) => {
     return (
         <div className="flex justify-center">
-            <CreateForm />
+            <CreateForm
+                username={params.username}
+            />
         </div>
     );
 }

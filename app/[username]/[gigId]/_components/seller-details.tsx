@@ -5,6 +5,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 import { UserWithCountryType } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { Star } from "lucide-react"
+import Link from "next/link";
 
 const { format } = require('date-fns');
 
@@ -41,12 +42,16 @@ export const SellerDetails = ({
     return (
         <div className="space-y-3">
             <div className="flex space-x-4">
-                <Avatar className="w-20 h-20">
-                    <AvatarImage src={seller.profileImageUrl || "https://github.com/shadcn.png"} />
-                    <AvatarFallback>{seller.username.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <Link href={`/${seller.username}`}>
+                    <Avatar className="w-20 h-20">
+                        <AvatarImage src={seller.profileImageUrl || "https://github.com/shadcn.png"} />
+                        <AvatarFallback>{seller.username.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                </Link>
                 <div className="w-fit flex flex-col space-y-2">
-                    <p className="font-bold text-lg">{seller.fullName}</p>
+                    <Link href={`/${seller.username}`}>
+                        <p className="font-bold text-lg">{seller.fullName}</p>
+                    </Link>
                     <p className="text-md">{seller.title}</p>
                     <div className="flex space-x-5">
                         <div className="flex space-x-1.5">

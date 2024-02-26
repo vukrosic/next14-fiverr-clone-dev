@@ -57,10 +57,8 @@ export const GigCard = ({
     const toggleFavorite = () => {
         if (isFavorite) {
             unfavorite({ id })
-            //.catch(() => toast.error("Failed to unfavorite"));
         } else {
             favorite({ id })
-            //.catch(() => toast.error("Failed to favorite"));
         }
     }
 
@@ -69,7 +67,7 @@ export const GigCard = ({
             <GigCard.Skeleton />
         )
     }
-    console.log(isFavorite);
+
     return (
         <Link href={`/${seller?.username}/${id}`}>
             {/* <div className="group aspect-[130/100] border rounded-lg flex flex-col justify-between overflow-hidden"> */}

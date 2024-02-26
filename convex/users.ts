@@ -77,13 +77,10 @@ export const store = mutation({
             apiVersion: "2023-10-16",
         });
 
-        // const account = await stripe.accounts.create({
-        //     type: 'standard',
-        //     email: identity.email
-        // });
+
 
         // If it's a new identity, create a new `User`.
-        return await ctx.db.insert("users", {
+        const userId = await ctx.db.insert("users", {
             fullName: identity.name!,
             tokenIdentifier: identity.tokenIdentifier,
             title: "",
@@ -92,6 +89,29 @@ export const store = mutation({
             username: identity.nickname!,
             profileImageUrl: identity.profileUrl,
         });
+
+        return userId;
+    },
+});
+
+export const createStripe = action({
+    args: {},
+    handler: async (ctx) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new Error("Called storeUser without authentication present");
+        }
+
+        const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {
+            apiVersion: "2023-10-16",
+        });
+
+        const account = await stripe.accounts.create({
+            type: 'standard',
+            email: identity.email
+        });
+
+        return account.id;
     },
 });
 

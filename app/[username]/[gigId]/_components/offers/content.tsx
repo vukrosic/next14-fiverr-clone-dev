@@ -20,7 +20,7 @@ export const Content = ({
             <div className="flex flex-col font-semibold text-zinc-700 space-y-2">
                 <div className="flex space-x-2">
                     <Clock />
-                    <p>{offer.delivery_time} Days Delivery</p>
+                    <p>{offer.delivery_days} Days Delivery</p>
                 </div>
                 <div className="flex space-x-2">
                     <RefreshCcw />

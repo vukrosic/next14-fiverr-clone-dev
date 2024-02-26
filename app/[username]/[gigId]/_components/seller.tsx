@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Doc } from "@/convex/_generated/dataModel";
 import { Star } from "lucide-react"
+import Link from "next/link";
 
 interface SellerProps {
     seller: Doc<"users">;
@@ -21,13 +22,17 @@ export const Seller = ({
 
     return (
         <div className="flex space-x-4">
-            <Avatar className="w-16 h-16">
-                <AvatarImage src={seller.profileImageUrl || "https://github.com/shadcn.png"} />
-                <AvatarFallback>{seller.username.charAt(0)}</AvatarFallback>
-            </Avatar>
+            <Link href={`/${seller.username}`}>
+                <Avatar className="w-16 h-16 ">
+                    <AvatarImage src={seller.profileImageUrl || "https://github.com/shadcn.png"} />
+                    <AvatarFallback>{seller.username.charAt(0)}</AvatarFallback>
+                </Avatar>
+            </Link>
             <div className="w-[300px] flex flex-col justify-between gap-y-2">
                 <div className="flex items-center">
-                    <p className="font-bold text-lg">{seller.fullName}</p>
+                    <Link href={`/${seller.username}`}>
+                        <p className="font-bold text-lg">{seller.fullName}</p>
+                    </Link>
                     <div className="bg-yellow-100 text-red-900 font-semibold p-1 ml-auto">{seller.customTag}</div>
                 </div>
                 <div className="flex items-center">

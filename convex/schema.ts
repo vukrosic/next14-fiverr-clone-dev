@@ -65,12 +65,18 @@ export default defineSchema({
         gigId: v.id("gigs"),
         title: v.string(),
         description: v.string(),
-        tier: v.string(),
+        tier: v.union(
+            v.literal("Basic"),
+            v.literal("Standard"),
+            v.literal("Premium")
+        ),
         price: v.number(),
-        delivery_time: v.string(),
+        delivery_days: v.number(),
         revisions: v.number(),
     })
-        .index("by_gigId", ["gigId"]),
+        .index("by_gigId", ["gigId"])
+        .index("by_tier", ["tier"])
+        .index("by_gigId_tier", ["gigId", "tier"]),
     orders: defineTable({
         offerId: v.id("offers"),
         gigId: v.id("gigs"),
@@ -96,9 +102,6 @@ export default defineSchema({
     })
         .index("by_category", ["categoryId"])
         .index("by_name", ["name"]),
-    searchTags: defineTable({
-        gigIds: v.array(v.string()),
-    }),
     faq: defineTable({
         question: v.string(),
         answer: v.string(),
@@ -125,10 +128,6 @@ export default defineSchema({
         .index("by_gig", ["gigId"])
         .index("by_user_gig", ["userId", "gigId"])
         .index("by_user", ["userId"]),
-    gigSearchTags: defineTable({
-        gigId: v.id("gigs"),
-        searchTagId: v.id("searchTags"),
-    }),
     // payments: defineTable({
     //     text: v.string(),
     //     stripeId: v.optional(v.string()),

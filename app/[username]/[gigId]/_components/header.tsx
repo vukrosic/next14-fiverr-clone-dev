@@ -51,10 +51,10 @@ export const Header = ({ category, subcategory, editUrl, ownerId }: HeaderProps)
             <Link href="/">
                 <Home className="w-4 h-4" />
             </Link>
-            <p className="text-muted-foreground">/</p>
+            <p className="text-muted-foreground cursor-default">/</p>
             <p className="cursor-default">{category}</p>
-            <p className="text-muted-foreground">/</p>
-            <div className="font-medium" onClick={handleSubcategoryClick}>{subcategory}</div>
+            <p className="text-muted-foreground cursor-default">/</p>
+            <div className="font-medium cursor-pointer" onClick={handleSubcategoryClick}>{subcategory}</div>
             {(currentUser?._id === ownerId &&
                 <Button variant={"secondary"}>
                     <Link href={editUrl}>

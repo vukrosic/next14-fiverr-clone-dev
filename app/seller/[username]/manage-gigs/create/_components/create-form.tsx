@@ -17,7 +17,11 @@ import { useQuery } from "convex/react"
 import { useState } from "react"
 import { Doc, Id } from "@/convex/_generated/dataModel"
 import { useApiMutation } from "@/hooks/use-api-mutation"
+import { useRouter } from "next/navigation"
 
+interface CreateFormProps {
+  username: string;
+}
 
 const CreateFormSchema = z.object({
   title: z
@@ -45,14 +49,16 @@ const defaultValues: Partial<CreateFormValues> = {
   title: "",
 }
 
-export function CreateForm() {
-
+export const CreateForm = ({
+  username
+}: CreateFormProps) => {
   const categories = useQuery(api.categories.get);
   const [subcategories, setSubcategories] = useState<Doc<"subcategories">[]>([]);
   const {
     mutate,
     pending
   } = useApiMutation(api.gig.create);
+  const router = useRouter();
 
   const form = useForm<CreateFormValues>({
     resolver: zodResolver(CreateFormSchema),
@@ -75,7 +81,8 @@ export function CreateForm() {
     })
       .then((gigId: Id<"gigs">) => {
         toast.info("Gig created successfully");
-        form.setValue("title", "");
+        //form.setValue("title", "");
+        router.push(`/seller/${username}/manage-gigs/edit/${gigId}`)
       })
       .catch(() => {
         toast.error("Failed to create gig")
@@ -101,26 +108,6 @@ export function CreateForm() {
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us about the gig"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                A strong Gig description is vital, it introduces services, expertise, and builds trust with clients.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <FormField
           control={form.control}
           name="category"
@@ -183,7 +170,7 @@ export function CreateForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Save</Button>
+        <Button type="submit" disabled={pending}>Save</Button>
       </form>
     </Form>
   )
