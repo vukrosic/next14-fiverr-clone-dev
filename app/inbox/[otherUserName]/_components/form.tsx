@@ -42,6 +42,8 @@ const Form = ({
     return (
         <div
             className="
+            fixed
+            bottom-0
             p-4
             bg-zinc-100 
             border-2

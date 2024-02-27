@@ -20,8 +20,6 @@ interface SidebarProps {
 export const Sidebar = ({
     children
 }: SidebarProps) => {
-    const searchParams = useSearchParams();
-    const favorites = searchParams.get("favorites");
     return (
         <aside className="fixed z-[1] left-0 bg-blue-950 h-full w-[300px] hidden lg:flex p-3 pt-5 flex-col gap-y-4 text-white">
             <Link href="/">

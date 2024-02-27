@@ -1,14 +1,5 @@
-'use client';
-
 import { useEffect, useRef, useState } from "react";
-
-
-
 import MessageBox from "./message-box";
-import { find } from "lodash";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Doc } from "@/convex/_generated/dataModel";
 import { MessageWithUserType } from "@/types";
 
 interface BodyProps {
@@ -19,10 +10,13 @@ const Body = ({
     messages
 }: BodyProps) => {
     const bottomRef = useRef<HTMLDivElement>(null);
-    // const [messages, setMessages] = useState(initialMessages);
 
-    // const { conversationId } = useConversation();
-
+    // Scroll to bottom whenever messages change
+    useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
 
     return (
         <div className="flex-grow overflow-y-auto">

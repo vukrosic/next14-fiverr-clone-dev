@@ -80,7 +80,6 @@ export const store = mutation({
             tokenIdentifier: identity.tokenIdentifier,
             title: "",
             about: "",
-            stripeAccountId: "account.id",
             username: identity.nickname!,
             profileImageUrl: identity.profileUrl,
         });
@@ -131,7 +130,6 @@ export const getStripeAccountId = internalQuery({
         if (!user) {
             throw new Error("User not found");
         }
-        console.log(user);
         return user.stripeAccountId;
     },
 });
@@ -168,6 +166,8 @@ export const getUserById = internalQuery({
 export const getUserByUsername = query({
     args: { username: v.string() },
     handler: async (ctx, args) => {
+        if (args.username === "undefined") throw new Error("Username is undefined22222");
+        if (args.username === undefined) throw new Error("Username is undefined11111");
         const user = await ctx.db
             .query("users")
             .withIndex("by_username", (q) => q.eq("username", args.username))

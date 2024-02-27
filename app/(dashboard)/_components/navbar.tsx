@@ -50,7 +50,7 @@ const Navbar = () => {
     return (
         <>
             <Separator />
-            <div className="flex items-center gap-x-4 p-5">
+            <div className="flex items-center gap-x-4 p-5 bg-white">
                 <div className="hidden lg:flex lg:flex-1">
                     <SearchInput />
                 </div>

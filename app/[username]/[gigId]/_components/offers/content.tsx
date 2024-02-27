@@ -22,17 +22,26 @@ export const Content = ({
     const orderNow = useAction(api.stripe.pay);
     const router = useRouter();
     const currentUser = useQuery(api.users.getCurrentUser);
-    if (currentUser === undefined) return <Loading />;
+    const seller = useQuery(api.users.get, { id: sellerId });
+
+    if (currentUser === undefined || seller === undefined) return <Loading />;
+
+    if (seller === null) return <div>Not found</div>;
+
     const handleOrderNow = async () => {
         try {
             const url = await orderNow({ priceId: offer.stripePriceId, title: offer.title, sellerId });
             if (!url) throw new Error("Error: Stripe session error.");
-            console.log(url)
-            //router.push(url);
+            router.push(url);
         } catch (error: any) {
             toast.error(error.message);
         }
     }
+
+    const handleSendMessage = () => {
+        router.push(`/inbox/${seller.username}`);
+    }
+
     const revisionText = offer.revisions === 1 ? "Revision" : "Revisions";
     return (
         <div className="space-y-4">
@@ -54,7 +63,7 @@ export const Content = ({
             {(currentUser?._id !== sellerId) && (
                 <>
                     <Button className="w-full" onClick={handleOrderNow}>Order Now</Button>
-                    <Button className="w-full" variant={"ghost"}>Send Message</Button>
+                    <Button className="w-full" onClick={handleSendMessage} variant={"ghost"}>Send Message</Button>
                 </>
             )}
             {(currentUser?._id === sellerId) && (

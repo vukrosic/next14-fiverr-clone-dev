@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
 import clsx from "clsx";
 import { useQuery } from "convex/react";
@@ -14,6 +14,7 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ConversationBoxProps {
     conversation: Doc<"conversations">;
@@ -27,7 +28,9 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     const router = useRouter();
     const otherUserId = conversation.participantOneId === currentUser._id ? conversation.participantTwoId : conversation.participantOneId;
     const otherUser = useQuery(api.users.get, { id: otherUserId });
-
+    const params = useParams();
+    const otherUserCheck = useQuery(api.users.getUserByUsername, { username: params.otherUserName as string })
+    console.log(otherUserCheck)
     const handleClick = useCallback(() => {
         router.push(`/inbox/${otherUser?.username}`);
     }, [router, otherUser?.username]);
@@ -71,18 +74,18 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     return (
         <div
             onClick={handleClick}
-            className="
+            className={cn(`
                 w-full 
                 relative 
                 flex 
-                items-top 
-                space-x-3 
+                items-center 
+                space-x-6 
                 p-3 
-                hover:bg-neutral-100
+                hover:bg-neutral-100/10
                 rounded-lg
                 transition
                 cursor-pointer
-            "
+            `)}
         >
             <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
