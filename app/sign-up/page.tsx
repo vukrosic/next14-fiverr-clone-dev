@@ -56,7 +56,7 @@ const SignUpPage = () => {
         />
         <Button
             onClick={async () => {
-                const res = await createStripe({});
+                const res = await createStripe({ userId });
                 console.log(res);
             }}
         >

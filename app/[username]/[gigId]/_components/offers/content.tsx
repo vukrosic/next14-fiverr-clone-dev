@@ -3,6 +3,8 @@ import { api } from "@/convex/_generated/api"
 import { Doc } from "@/convex/_generated/dataModel"
 import { useAction } from "convex/react"
 import { Clock, RefreshCcw } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 interface OffersProps {
     offer: Doc<"offers">
@@ -11,10 +13,17 @@ interface OffersProps {
 export const Content = ({
     offer
 }: OffersProps) => {
-    const orderNow = useAction(api.stripe.pay)
-    const handleOrderNow = () => {
-        console.log("Order Now");
-        orderNow({ priceId: offer.stripePriceId });
+    const orderNow = useAction(api.stripe.pay);
+    const router = useRouter();
+    const handleOrderNow = async () => {
+        try {
+            const url = await orderNow({ priceId: offer.stripePriceId, title: offer.title, stripeAccountId: "acct_1OoNoQ2fly9COzKj" });
+            if (!url) throw new Error("Error: Stripe session error.");
+            console.log(url)
+            //router.push(url);
+        } catch (error: any) {
+            toast.error(error.message);
+        }
     }
     const revisionText = offer.revisions === 1 ? "Revision" : "Revisions";
     return (

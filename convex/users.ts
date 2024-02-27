@@ -1,6 +1,7 @@
 import { v } from "convex/values";
-import { action, mutation, query } from "./_generated/server";
+import { action, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import Stripe from "stripe";
+import { internal } from "./_generated/api";
 
 // export const store = action({
 //     args: {},
@@ -73,12 +74,6 @@ export const store = mutation({
             return user._id;
         }
 
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-            apiVersion: "2023-10-16",
-        });
-
-
-
         // If it's a new identity, create a new `User`.
         const userId = await ctx.db.insert("users", {
             fullName: identity.name!,
@@ -95,8 +90,8 @@ export const store = mutation({
 });
 
 export const createStripe = action({
-    args: {},
-    handler: async (ctx) => {
+    args: { userId: v.id("users") },
+    handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
             throw new Error("Called storeUser without authentication present");
@@ -106,21 +101,52 @@ export const createStripe = action({
             apiVersion: "2023-10-16",
         });
 
-        const account = await stripe.accounts.create({
-            type: 'standard',
-            email: identity.email
-        });
+        let accountId: string | null = await ctx.runQuery(internal.users.getStripeAccountId, { userId: args.userId });
+
+        if (!accountId) {
+            const account = await stripe.accounts.create({
+                type: 'standard',
+            });
+            accountId = account.id;
+
+            await ctx.runMutation(internal.users.setStripeAccountId, { userId: args.userId, stripeAccountId: accountId });
+        }
+
 
         const accountLink = await stripe.accountLinks.create({
-            account: account.id,
+            account: accountId,
             refresh_url: 'http://localhost:3000/sign-up',
-            return_url: 'http://localhost:3000/',
+            return_url: `http://localhost:3000/stripe-account-setup-complete/${args.userId}`,
             type: 'account_onboarding',
         });
 
-        return accountLink;
+        return accountLink.url;
     },
 });
+
+export const getStripeAccountId = internalQuery({
+    args: { userId: v.id("users") },
+    handler: async (ctx, args) => {
+        const user = await ctx.db.get(args.userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return user.stripeAccountId;
+    },
+});
+
+export const setStripeAccountId = internalMutation({
+    args: { userId: v.id("users"), stripeAccountId: v.string() },
+    handler: async (ctx, args) => {
+        const user = await ctx.db.get(args.userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        await ctx.db.patch(args.userId, { stripeAccountId: args.stripeAccountId });
+    },
+});
+
+
 
 export const get = query({
     args: { id: v.id("users") },
@@ -142,6 +168,12 @@ export const getUserByUsername = query({
     },
 });
 
+export const updateStripeSetup = internalMutation({
+    args: { id: v.id("users"), stripeAccountSetupComplete: v.boolean() },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.id, { stripeAccountSetupComplete: args.stripeAccountSetupComplete });
+    },
+});
 
 // export const get = query({
 //     args: { body: v.string() },
