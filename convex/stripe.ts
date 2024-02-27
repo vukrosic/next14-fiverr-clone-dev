@@ -3,6 +3,7 @@ import { action, httpAction, internalAction, internalMutation, internalQuery, mu
 import Stripe from "stripe";
 import { api, internal } from "./_generated/api";
 import { httpRouter } from "convex/server";
+import { Doc } from "./_generated/dataModel";
 
 export const onboard = action({
     args: { code: v.string(), stripeAccountId: v.string() },
@@ -25,12 +26,17 @@ export const onboard = action({
 
 
 export const pay = action({
-    args: { priceId: v.string(), title: v.string(), stripeAccountId: v.string() },
+    args: { priceId: v.string(), title: v.string(), sellerId: v.id("users") },
     handler: async (ctx, args) => {
 
         const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY!, {
             apiVersion: "2023-10-16",
         });
+
+        const prices = await stripe.prices.retrieve("price_1Oo6A0KEQZnOTK3DryLDwnzT");
+
+        console.log(prices)
+
         const domain = process.env.NEXT_PUBLIC_HOSTING_URL;
 
         const price = await stripe.prices.retrieve(args.priceId);
@@ -39,12 +45,18 @@ export const pay = action({
             throw new Error("Error: Stripe price doesn't have unit_amount.");
         }
 
-        const session = await stripe.checkout.sessions.create(
+        const stripeAccountId: string | null = await ctx.runQuery(internal.users.getStripeAccountId, { userId: args.sellerId });
+
+        if (stripeAccountId === null) {
+            throw new Error("Error: Stripe account not found.");
+        }
+
+        const session: Stripe.Response<Stripe.Checkout.Session> = await stripe.checkout.sessions.create(
             {
                 mode: 'payment',
                 // line_items: [
                 //     {
-                //         price: args.priceId,
+                //         price: "price_1Oo6A0KEQZnOTK3DryLDwnzT",
                 //         quantity: 1,
                 //     },
                 // ],
@@ -67,7 +79,7 @@ export const pay = action({
                 cancel_url: `${domain}`,
             },
             {
-                stripeAccount: args.stripeAccountId,
+                stripeAccount: stripeAccountId,
             }
         );
 

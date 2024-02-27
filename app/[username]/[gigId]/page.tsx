@@ -90,6 +90,8 @@ const GigPage = ({
                 </div>
                 <Offers
                     offers={offers}
+                    sellerId={gig.seller._id}
+                    editUrl={editUrl}
                 />
             </div>
         </div>

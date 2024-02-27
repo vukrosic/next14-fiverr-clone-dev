@@ -56,8 +56,8 @@ const SignUpPage = () => {
         />
         <Button
             onClick={async () => {
-                const res = await createStripe({ userId });
-                console.log(res);
+                const url = await createStripe({ userId });
+                router.push(url);
             }}
         >
             Create stripe

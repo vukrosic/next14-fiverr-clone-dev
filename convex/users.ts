@@ -131,6 +131,7 @@ export const getStripeAccountId = internalQuery({
         if (!user) {
             throw new Error("User not found");
         }
+        console.log(user);
         return user.stripeAccountId;
     },
 });
@@ -149,6 +150,14 @@ export const setStripeAccountId = internalMutation({
 
 
 export const get = query({
+    args: { id: v.id("users") },
+    handler: async (ctx, args) => {
+        const user = await ctx.db.get(args.id);
+        return user;
+    },
+});
+
+export const getUserById = internalQuery({
     args: { id: v.id("users") },
     handler: async (ctx, args) => {
         const user = await ctx.db.get(args.id);

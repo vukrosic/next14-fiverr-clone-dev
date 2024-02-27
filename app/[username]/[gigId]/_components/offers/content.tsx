@@ -1,23 +1,31 @@
+import { Loading } from "@/components/auth/loading"
 import { Button } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
-import { Doc } from "@/convex/_generated/dataModel"
-import { useAction } from "convex/react"
+import { Doc, Id } from "@/convex/_generated/dataModel"
+import { useAction, useQuery } from "convex/react"
 import { Clock, RefreshCcw } from "lucide-react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 interface OffersProps {
     offer: Doc<"offers">
+    sellerId: Id<"users">
+    editUrl: string
 }
 
 export const Content = ({
-    offer
+    offer,
+    sellerId,
+    editUrl
 }: OffersProps) => {
     const orderNow = useAction(api.stripe.pay);
     const router = useRouter();
+    const currentUser = useQuery(api.users.getCurrentUser);
+    if (currentUser === undefined) return <Loading />;
     const handleOrderNow = async () => {
         try {
-            const url = await orderNow({ priceId: offer.stripePriceId, title: offer.title, stripeAccountId: "acct_1OoNoQ2fly9COzKj" });
+            const url = await orderNow({ priceId: offer.stripePriceId, title: offer.title, sellerId });
             if (!url) throw new Error("Error: Stripe session error.");
             console.log(url)
             //router.push(url);
@@ -43,8 +51,19 @@ export const Content = ({
                     <p>{offer.revisions} {revisionText}</p>
                 </div>
             </div>
-            <Button className="w-full" onClick={handleOrderNow}>Order Now</Button>
-            <Button className="w-full" variant={"ghost"}>Send Message</Button>
+            {(currentUser?._id !== sellerId) && (
+                <>
+                    <Button className="w-full" onClick={handleOrderNow}>Order Now</Button>
+                    <Button className="w-full" variant={"ghost"}>Send Message</Button>
+                </>
+            )}
+            {(currentUser?._id === sellerId) && (
+                <Button className="w-full">
+                    <Link href={editUrl}>
+                        Edit
+                    </Link>
+                </Button>
+            )}
         </div>
     )
 }
