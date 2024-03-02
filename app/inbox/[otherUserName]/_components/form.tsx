@@ -25,6 +25,7 @@ const Form = ({
     } = useApiMutation(api.messages.send);
 
     const handleSubmit = () => {
+        if (text === "") return;
         mutate({
             text: text,
             userId,

@@ -44,7 +44,7 @@ export const Content = ({
 
     const revisionText = offer.revisions === 1 ? "Revision" : "Revisions";
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white">
             <div className="flex pb-4 font-bold items-center">
                 <h1>{offer.title}</h1>
                 <p className="ml-auto text-2xl">${offer.price}</p>

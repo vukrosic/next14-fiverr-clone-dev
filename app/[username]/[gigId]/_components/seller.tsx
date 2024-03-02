@@ -6,16 +6,12 @@ import Link from "next/link";
 interface SellerProps {
     seller: Doc<"users">;
     reviews: Doc<"reviews">[];
-    ordersNumber: number;
 }
 
 export const Seller = ({
     seller,
     reviews,
-    ordersNumber
 }: SellerProps) => {
-    const orderLabel = ordersNumber === 1 ? ordersNumber + " Order in Queue" : ordersNumber + " Orders in Queue";
-
     const averageReview = reviews.reduce((acc, review) => {
         return acc + review.communication_level + review.recommend_to_a_friend + review.service_as_described;
     }, 0) / reviews.length;
@@ -41,7 +37,6 @@ export const Seller = ({
                         <p className="font-semibold">{reviews.length}</p>
                         (<p className="underline">{averageReview || 0}</p>)
                     </div>
-                    <div className="ml-auto">{orderLabel}</div>
                 </div>
             </div>
 

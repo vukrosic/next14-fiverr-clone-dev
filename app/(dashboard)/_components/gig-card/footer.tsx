@@ -25,9 +25,10 @@ export const Footer = ({
   reviews,
   seller
 }: FooterProps) => {
-  const totalReviews = reviews.length;
-  const averageReview = reviews.reduce((acc, review) => acc + review.communication_level + review.recommend_to_a_friend + review.service_as_described, 0) / (reviews.length * 3);
-
+  let averageReview: number = reviews.length > 0 ? reviews.reduce((acc, review) => acc + review.communication_level + review.recommend_to_a_friend + review.service_as_described, 0) / (reviews.length * 3) : 0;
+  if (averageReview % 1 !== 0) {
+    averageReview = parseFloat(averageReview.toFixed(1));
+  }
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -46,7 +47,7 @@ export const Footer = ({
       <div className="flex gap-x-1.5 text-md font-normal">
         <Star className="font-semibold" />
         <p className="font-semibold">{reviews.length}</p>
-        (<p className="underline">{averageReview || 0}</p>)
+        (<p className="underline">{averageReview}</p>)
         {/* {reviews.length > 0 && averageReview.toFixed(1) && (
           <p className="font-normal">{totalReviews > 0 && `(${totalReviews || 0})`}</p>
         )}

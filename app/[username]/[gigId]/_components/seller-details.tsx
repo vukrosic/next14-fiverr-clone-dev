@@ -6,13 +6,13 @@ import { UserWithCountryType } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { Star } from "lucide-react"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const { format } = require('date-fns');
 
 interface SellerProps {
     seller: UserWithCountryType;
     reviews: Doc<"reviews">[];
-    ordersNumber: number;
     lastFulFilmentTime: number | undefined;
     languages: Doc<"languages">[];
 }
@@ -20,12 +20,10 @@ interface SellerProps {
 export const SellerDetails = ({
     seller,
     reviews,
-    ordersNumber,
     lastFulFilmentTime,
     languages
 }: SellerProps) => {
-    const orderLabel = ordersNumber === 1 ? ordersNumber + " Order in Queue" : ordersNumber + " Orders in Queue";
-
+    const router = useRouter();
     const averageReview = reviews.reduce((acc, review) => {
         return acc + review.communication_level + review.recommend_to_a_friend + review.service_as_described;
     }, 0) / reviews.length;
@@ -38,6 +36,10 @@ export const SellerDetails = ({
     }
 
     const languagesString = languages.map((language) => language.language).join(", ");
+
+    const handleContactClick = () => {
+        router.push(`/inbox/${seller.username}`);
+    }
 
     return (
         <div className="space-y-3">
@@ -63,7 +65,7 @@ export const SellerDetails = ({
                     </div>
                 </div>
             </div>
-            <Button variant={"outline"}>Contact me</Button>
+            <Button variant={"outline"} onClick={handleContactClick}>Contact me</Button>
             <div className="border border-black/20 p-4 space-y-3 rounded-2xl">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4">
                     <div>

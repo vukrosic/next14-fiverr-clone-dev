@@ -164,13 +164,13 @@ export const getUserById = internalQuery({
 });
 
 export const getUserByUsername = query({
-    args: { username: v.string() },
+    args: { username: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        if (args.username === "undefined") throw new Error("Username is undefined22222");
-        if (args.username === undefined) throw new Error("Username is undefined11111");
+        if (args.username === undefined) return null;
+        if (!args.username) return null;
         const user = await ctx.db
             .query("users")
-            .withIndex("by_username", (q) => q.eq("username", args.username))
+            .withIndex("by_username", (q) => q.eq("username", args.username!))
             .unique();
 
         return user;

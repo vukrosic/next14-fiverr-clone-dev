@@ -26,7 +26,7 @@ export const Offers = ({
                     </TabsList>
                     {offers.map((offer) => {
                         return (
-                            <TabsContent key={offer._id} value={offer._id}>
+                            <TabsContent key={offer._id} value={offer._id} className="bg-white">
                                 <Content
                                     offer={offer}
                                     sellerId={sellerId}

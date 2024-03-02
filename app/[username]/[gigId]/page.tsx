@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import { SellerDetails } from "./_components/seller-details";
 import { Portfolio } from "@/components/portfolio";
+import { Reviews } from "../_components/reviews/reviews";
+import { AddReview } from "../_components/reviews/add-reivew";
 
 
 interface PageProps {
@@ -29,10 +31,10 @@ const GigPage = ({
     //const seller = useQuery(api.users.getUserByUsername, { username: params.username });
     const categoryAndSubcategory = useQuery(api.gig.getCategoryAndSubcategory, { gigId: params.gigId as Id<"gigs"> });
     const offers = useQuery(api.offers.get, { gigId: params.gigId as Id<"gigs"> });
-    const ordersNumber = useQuery(api.orders.getOrderNumberByGig, { gigId: params.gigId as Id<"gigs"> });
     const reviews = useQuery(api.reviews.getByGig, { gigId: params.gigId as Id<"gigs"> });
+    const reviewsFull = useQuery(api.reviews.getFullByGig, { gigId: params.gigId as Id<"gigs"> });
 
-    if (gig === undefined || reviews === undefined || ordersNumber === undefined || categoryAndSubcategory === undefined || offers == undefined) {
+    if (gig === undefined || reviews === undefined || reviewsFull === undefined || categoryAndSubcategory === undefined || offers == undefined) {
         return <div>Loading...</div>
     }
 
@@ -58,7 +60,6 @@ const GigPage = ({
                     <h1 className="text-3xl font-bold break-words text-[#3F3F3F]">{gig.title}</h1>
                     <Seller
                         seller={gig.seller}
-                        ordersNumber={ordersNumber}
                         reviews={reviews}
                     />
                     <Images
@@ -83,9 +84,15 @@ const GigPage = ({
                     <SellerDetails
                         seller={gig.seller}
                         reviews={reviews}
-                        ordersNumber={ordersNumber}
                         lastFulFilmentTime={gig.lastFulfilment?.fulfilmentTime}
                         languages={gig.seller.languages}
+                    />
+                    <Reviews
+                        reviews={reviewsFull}
+                    />
+                    <AddReview
+                        gigId={gig._id}
+                        sellerId={gig.seller._id}
                     />
                 </div>
                 <Offers

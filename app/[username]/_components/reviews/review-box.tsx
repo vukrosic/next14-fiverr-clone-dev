@@ -57,7 +57,7 @@ export const ReviewBox = ({ review }: ReviewBoxProps) => {
                     </div>
                     <div className='flex flex-col space-y-3 justify-evenly'>
                         <p className='font-normal'>{review.gig.title}</p>
-                        <p className=''>From ${review.offers[0].price}</p>
+                        {/* <p className=''>From ${review.offers[0].price}</p> */}
                     </div>
                 </div>
             </div>

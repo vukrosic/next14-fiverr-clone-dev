@@ -30,46 +30,10 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     const otherUser = useQuery(api.users.get, { id: otherUserId });
     const params = useParams();
     const otherUserCheck = useQuery(api.users.getUserByUsername, { username: params.otherUserName as string })
-    console.log(otherUserCheck)
+
     const handleClick = useCallback(() => {
         router.push(`/inbox/${otherUser?.username}`);
     }, [router, otherUser?.username]);
-
-    // const lastMessage = useMemo(() => {
-    //     const messages = data.messages || [];
-
-    //     return messages[messages.length - 1];
-    // }, [data.messages]);
-
-    // const userEmail = useMemo(() => session.data?.user?.email,
-    //     [session.data?.user?.email]);
-
-    // const hasSeen = useMemo(() => {
-    //     if (!lastMessage) {
-    //         return false;
-    //     }
-
-    //     const seenArray = lastMessage.seen || [];
-
-    //     if (!userEmail) {
-    //         return false;
-    //     }
-
-    //     return seenArray
-    //         .filter((user) => user.email === userEmail).length !== 0;
-    // }, [userEmail, lastMessage]);
-
-    // const lastMessageText = useMemo(() => {
-    //     if (lastMessage?.image) {
-    //         return 'Sent an image';
-    //     }
-
-    //     if (lastMessage?.body) {
-    //         return lastMessage?.body
-    //     }
-
-    //     return 'Started a conversation';
-    // }, [lastMessage]);
 
     return (
         <div
@@ -85,7 +49,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
                 rounded-lg
                 transition
                 cursor-pointer
-            `)}
+            `, otherUserCheck && otherUserCheck._id === otherUser?._id && 'bg-neutral-100/20')}
         >
             <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />

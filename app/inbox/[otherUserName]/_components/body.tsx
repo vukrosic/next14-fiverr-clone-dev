@@ -19,7 +19,7 @@ const Body = ({
     }, [messages]);
 
     return (
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
             {messages.map((message, i) => (
                 <MessageBox
                     isLast={i === messages.length - 1}
